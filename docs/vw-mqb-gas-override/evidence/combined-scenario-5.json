@@ -1,0 +1,370 @@
+{
+  "name": "ImplementationReview?>ImplementationApproved+ControllerAndSafetyTests?>AutomatedTestsPassed+ReplayAndBenchValidation?>BenchEvidenceReady+VehicleTestReview?>ControlledTestingApproved+ResultsReview?>VehicleValidationAccepted",
+  "label": "ImplementationReview?>ImplementationApproved: taken + ControllerAndSafetyTests?>AutomatedTestsPassed: taken + ReplayAndBenchValidation?>BenchEvidenceReady: taken + VehicleTestReview?>ControlledTestingApproved: taken + ResultsReview?>VehicleValidationAccepted: taken",
+  "outcome": "ok",
+  "frames": 271,
+  "states": [
+    "[MQBStateResolver] Inactive"
+  ],
+  "failed": [],
+  "routes": [],
+  "ignored": [],
+  "waiting": [],
+  "open": [],
+  "bounds": [],
+  "steps": [
+    {
+      "frame": 0,
+      "tick": 0,
+      "text": "episode 1 begins at (ControllerHost); (ControllerHost) calls [Runtime] with {RuntimeSession}"
+    },
+    {
+      "frame": 5,
+      "tick": 5,
+      "text": "[ControllerLifecycle] produces into <Initialize>"
+    },
+    {
+      "frame": 10,
+      "tick": 10,
+      "text": "<Initialize> calls [RuntimeInputs]; <Initialize> drives [MQBStateResolver]"
+    },
+    {
+      "frame": 14,
+      "tick": 14,
+      "text": "[MQBStateResolver] moves + → Inactive on <Initialize>"
+    },
+    {
+      "frame": 15,
+      "tick": 15,
+      "text": "[RuntimeInputs] produces {InputSnapshot}"
+    },
+    {
+      "frame": 20,
+      "tick": 20,
+      "text": "{InputSnapshot} calls [AuthorityDecision]"
+    },
+    {
+      "frame": 25,
+      "tick": 25,
+      "text": "[AuthorityDecision] produces {StateDecision}"
+    },
+    {
+      "frame": 30,
+      "tick": 30,
+      "text": "branch {StateDecision}.kind takes ‹inactive›"
+    },
+    {
+      "frame": 35,
+      "tick": 35,
+      "text": "[DecisionEmitter] produces into <SelectInactive>"
+    },
+    {
+      "frame": 40,
+      "tick": 40,
+      "text": "[MQBStateResolver] produces {ResolvedACCCommand}; <SelectInactive> drives [MQBStateResolver]"
+    },
+    {
+      "frame": 44,
+      "tick": 44,
+      "text": "[MQBStateResolver] moves Inactive → Inactive on <SelectInactive>"
+    },
+    {
+      "frame": 45,
+      "tick": 45,
+      "text": "{ResolvedACCCommand} calls [MQBEncoder]"
+    },
+    {
+      "frame": 50,
+      "tick": 50,
+      "text": "[MQBEncoder] produces {ACCFrames}"
+    },
+    {
+      "frame": 55,
+      "tick": 55,
+      "text": "{ACCFrames} calls [PandaSafety]"
+    },
+    {
+      "frame": 61,
+      "tick": 61,
+      "text": "episode 2 begins at [EvidenceReview]; (Reviewer) calls [DatasetInventory] with {DatasetSelection}"
+    },
+    {
+      "frame": 66,
+      "tick": 66,
+      "text": "[DatasetInventory] produces {DatasetManifest}"
+    },
+    {
+      "frame": 71,
+      "tick": 71,
+      "text": "{DatasetManifest} calls [ProtocolEvidenceReview]"
+    },
+    {
+      "frame": 76,
+      "tick": 76,
+      "text": "[ProtocolEvidenceReview] produces {ProtocolContractDraft}"
+    },
+    {
+      "frame": 81,
+      "tick": 81,
+      "text": "{ProtocolContractDraft} calls [StockTraceComparison]"
+    },
+    {
+      "frame": 86,
+      "tick": 86,
+      "text": "[StockTraceComparison] produces {ProtocolEvidence}"
+    },
+    {
+      "frame": 91,
+      "tick": 91,
+      "text": "{ProtocolEvidence} calls [MQBCompatibilityReview]"
+    },
+    {
+      "frame": 96,
+      "tick": 96,
+      "text": "[MQBCompatibilityReview] produces {CompatibilityRiskRegister}"
+    },
+    {
+      "frame": 101,
+      "tick": 101,
+      "text": "{CompatibilityRiskRegister} calls [ImplementationReview]"
+    },
+    {
+      "frame": 105,
+      "tick": 105,
+      "text": "{CompatibilityRiskRegister} reaches the join into [ImplementationReview]; {ProtocolEvidence} calls [ImplementationReview]"
+    },
+    {
+      "frame": 109,
+      "tick": 109,
+      "text": "{ProtocolEvidence} reaches the join into [ImplementationReview]; the join is complete: [ImplementationReview] runs"
+    },
+    {
+      "frame": 110,
+      "tick": 110,
+      "text": "[ImplementationReview] takes the optional path to <ImplementationApproved>"
+    },
+    {
+      "frame": 115,
+      "tick": 115,
+      "text": "<ImplementationApproved> calls [TransitionTestDesign]"
+    },
+    {
+      "frame": 120,
+      "tick": 120,
+      "text": "[TransitionTestDesign] produces {RegressionCases}"
+    },
+    {
+      "frame": 125,
+      "tick": 125,
+      "text": "{RegressionCases} calls [CandidateImplementation]"
+    },
+    {
+      "frame": 130,
+      "tick": 130,
+      "text": "[CandidateImplementation] produces {CandidateRevisionPair}"
+    },
+    {
+      "frame": 135,
+      "tick": 135,
+      "text": "{CandidateRevisionPair} calls [ControllerAndSafetyTests]"
+    },
+    {
+      "frame": 140,
+      "tick": 140,
+      "text": "[ControllerAndSafetyTests] takes the optional path to <AutomatedTestsPassed>"
+    },
+    {
+      "frame": 145,
+      "tick": 145,
+      "text": "<AutomatedTestsPassed> calls [ReplayAndBenchValidation]"
+    },
+    {
+      "frame": 150,
+      "tick": 150,
+      "text": "[ReplayAndBenchValidation] takes the optional path to <BenchEvidenceReady>"
+    },
+    {
+      "frame": 155,
+      "tick": 155,
+      "text": "<BenchEvidenceReady> calls [VehicleTestReview]"
+    },
+    {
+      "frame": 160,
+      "tick": 160,
+      "text": "[VehicleTestReview] takes the optional path to <ControlledTestingApproved>"
+    },
+    {
+      "frame": 165,
+      "tick": 165,
+      "text": "<ControlledTestingApproved> calls [ControlledVehicleValidation]"
+    },
+    {
+      "frame": 170,
+      "tick": 170,
+      "text": "[ControlledVehicleValidation] produces {VehicleSpecificResults}"
+    },
+    {
+      "frame": 175,
+      "tick": 175,
+      "text": "{VehicleSpecificResults} calls [ResultsReview]"
+    },
+    {
+      "frame": 180,
+      "tick": 180,
+      "text": "[ResultsReview] takes the optional path to <VehicleValidationAccepted>"
+    },
+    {
+      "frame": 185,
+      "tick": 185,
+      "text": "<VehicleValidationAccepted> calls [UpstreamSubmissionReview]"
+    },
+    {
+      "frame": 190,
+      "tick": 190,
+      "text": "[EvidenceReview] calls [Validation] with {ApprovedCandidateScope}"
+    },
+    {
+      "frame": 195,
+      "tick": 195,
+      "text": "<ImplementationApproved> calls [TransitionTestDesign]"
+    },
+    {
+      "frame": 200,
+      "tick": 200,
+      "text": "[TransitionTestDesign] produces {RegressionCases}"
+    },
+    {
+      "frame": 205,
+      "tick": 205,
+      "text": "{RegressionCases} calls [CandidateImplementation]"
+    },
+    {
+      "frame": 210,
+      "tick": 210,
+      "text": "[CandidateImplementation] produces {CandidateRevisionPair}"
+    },
+    {
+      "frame": 215,
+      "tick": 215,
+      "text": "{CandidateRevisionPair} calls [ControllerAndSafetyTests]"
+    },
+    {
+      "frame": 220,
+      "tick": 220,
+      "text": "[ControllerAndSafetyTests] takes the optional path to <AutomatedTestsPassed>"
+    },
+    {
+      "frame": 225,
+      "tick": 225,
+      "text": "<AutomatedTestsPassed> calls [ReplayAndBenchValidation]"
+    },
+    {
+      "frame": 230,
+      "tick": 230,
+      "text": "[ReplayAndBenchValidation] takes the optional path to <BenchEvidenceReady>"
+    },
+    {
+      "frame": 235,
+      "tick": 235,
+      "text": "<BenchEvidenceReady> calls [VehicleTestReview]"
+    },
+    {
+      "frame": 240,
+      "tick": 240,
+      "text": "[VehicleTestReview] takes the optional path to <ControlledTestingApproved>"
+    },
+    {
+      "frame": 245,
+      "tick": 245,
+      "text": "<ControlledTestingApproved> calls [ControlledVehicleValidation]"
+    },
+    {
+      "frame": 250,
+      "tick": 250,
+      "text": "[ControlledVehicleValidation] produces {VehicleSpecificResults}"
+    },
+    {
+      "frame": 255,
+      "tick": 255,
+      "text": "{VehicleSpecificResults} calls [ResultsReview]"
+    },
+    {
+      "frame": 260,
+      "tick": 260,
+      "text": "[ResultsReview] takes the optional path to <VehicleValidationAccepted>"
+    },
+    {
+      "frame": 265,
+      "tick": 265,
+      "text": "<VehicleValidationAccepted> calls [UpstreamSubmissionReview]"
+    },
+    {
+      "frame": 270,
+      "tick": 270,
+      "text": "the run ends: ok"
+    }
+  ],
+  "log": [
+    "t000 conventions: written order; entries one after another; ?> not taken by default; the first member wins a race / alternative / branch",
+    "t000 episode 1: (ControllerHost)",
+    "t000 (ControllerHost) -> [Runtime] : {RuntimeSession}",
+    "t005 [ControllerLifecycle] => <Initialize>",
+    "t010 <Initialize> -> [RuntimeInputs]",
+    "t014 [MQBStateResolver] + -<Initialize>-> Inactive",
+    "t015 [RuntimeInputs] => {InputSnapshot}",
+    "t020 {InputSnapshot} -> [AuthorityDecision]",
+    "t025 [AuthorityDecision] => {StateDecision}",
+    "t030 branch {StateDecision}.kind: inactive",
+    "t035 [DecisionEmitter] => <SelectInactive>",
+    "t040 [MQBStateResolver] => {ResolvedACCCommand}",
+    "t044 [MQBStateResolver] Inactive -<SelectInactive>-> Inactive",
+    "t045 {ResolvedACCCommand} -> [MQBEncoder]",
+    "t050 [MQBEncoder] => {ACCFrames}",
+    "t055 {ACCFrames} -> [PandaSafety]",
+    "t061 episode 2: [EvidenceReview]",
+    "t061 (Reviewer) -> [DatasetInventory] : {DatasetSelection}",
+    "t066 [DatasetInventory] => {DatasetManifest}",
+    "t071 {DatasetManifest} -> [ProtocolEvidenceReview]",
+    "t076 [ProtocolEvidenceReview] => {ProtocolContractDraft}",
+    "t081 {ProtocolContractDraft} -> [StockTraceComparison]",
+    "t086 [StockTraceComparison] => {ProtocolEvidence}",
+    "t091 {ProtocolEvidence} -> [MQBCompatibilityReview]",
+    "t096 [MQBCompatibilityReview] => {CompatibilityRiskRegister}",
+    "t101 {CompatibilityRiskRegister} -> [ImplementationReview]",
+    "t105 deposit: {CompatibilityRiskRegister} at [ImplementationReview]",
+    "t105 {ProtocolEvidence} -> [ImplementationReview]",
+    "t110 [ImplementationReview] ?> <ImplementationApproved>",
+    "t115 <ImplementationApproved> -> [TransitionTestDesign]",
+    "t120 [TransitionTestDesign] => {RegressionCases}",
+    "t125 {RegressionCases} -> [CandidateImplementation]",
+    "t130 [CandidateImplementation] => {CandidateRevisionPair}",
+    "t135 {CandidateRevisionPair} -> [ControllerAndSafetyTests]",
+    "t140 [ControllerAndSafetyTests] ?> <AutomatedTestsPassed>",
+    "t145 <AutomatedTestsPassed> -> [ReplayAndBenchValidation]",
+    "t150 [ReplayAndBenchValidation] ?> <BenchEvidenceReady>",
+    "t155 <BenchEvidenceReady> -> [VehicleTestReview]",
+    "t160 [VehicleTestReview] ?> <ControlledTestingApproved>",
+    "t165 <ControlledTestingApproved> -> [ControlledVehicleValidation]",
+    "t170 [ControlledVehicleValidation] => {VehicleSpecificResults}",
+    "t175 {VehicleSpecificResults} -> [ResultsReview]",
+    "t180 [ResultsReview] ?> <VehicleValidationAccepted>",
+    "t185 <VehicleValidationAccepted> -> [UpstreamSubmissionReview]",
+    "t190 [EvidenceReview] -> [Validation] : {ApprovedCandidateScope}",
+    "t195 <ImplementationApproved> -> [TransitionTestDesign]",
+    "t200 [TransitionTestDesign] => {RegressionCases}",
+    "t205 {RegressionCases} -> [CandidateImplementation]",
+    "t210 [CandidateImplementation] => {CandidateRevisionPair}",
+    "t215 {CandidateRevisionPair} -> [ControllerAndSafetyTests]",
+    "t220 [ControllerAndSafetyTests] ?> <AutomatedTestsPassed>",
+    "t225 <AutomatedTestsPassed> -> [ReplayAndBenchValidation]",
+    "t230 [ReplayAndBenchValidation] ?> <BenchEvidenceReady>",
+    "t235 <BenchEvidenceReady> -> [VehicleTestReview]",
+    "t240 [VehicleTestReview] ?> <ControlledTestingApproved>",
+    "t245 <ControlledTestingApproved> -> [ControlledVehicleValidation]",
+    "t250 [ControlledVehicleValidation] => {VehicleSpecificResults}",
+    "t255 {VehicleSpecificResults} -> [ResultsReview]",
+    "t260 [ResultsReview] ?> <VehicleValidationAccepted>",
+    "t265 <VehicleValidationAccepted> -> [UpstreamSubmissionReview]",
+    "t270 done: ok"
+  ]
+}

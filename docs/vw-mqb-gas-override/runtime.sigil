@@ -1,0 +1,349 @@
+#!craft
+
+# Draft companion to vw-mqb-gas-override-design.md; not executable safety logic.
+# Guards, input freshness, and loss-of-authority behavior require review.
+# Purpose: preserve authorized MQB ACC engagement across gas override without hiding disengagement.
+# Completion gates and owner-dependent blockers: mqb-evidence/completion-checklist.md.
+# Safety authorization: Set/Resume falling edge with main-on; physical cancel revokes.
+# Do not require TSK active to authorize opLong; main-on also includes standby.
+# Panda builds against opendbc headers resolved by its build environment.
+# SubMaster conflation is per topic; no atomic CS/CC pairing or msgq change assumed.
+# Mixed engineering workflow and embedded runtime; no system-kind exemption asserted.
+
+--- Plan Units ---
+{RuntimePolicyDecision}
+# Runtime is modeled separately: a workflow approval does not start vehicle control.
+[EvidenceReview]
+(ReviewHost) -> [EvidenceReview] : {ReviewSession}
+[Runtime]
+[Validation]
+[ImplementationApprovalGate] ?> [Validation] : {ApprovedCandidateScope}
+[EvidenceReview] ?> [ImplementationApprovalGate] : {RuntimePolicyDecision}
+(ControllerHost) -> [Runtime] : {RuntimeSession}
+# Evidence approval enters Validation only through ImplementationApproved.
+# Draft: owner routes, target deployment and unresolved policies still block approval.
+
+--- Evidence Review ---
+[EvidenceReview] := {
+  # Vendor datasets are reference data, not instructions or executable inputs.
+  # Source root: /Volumes/nas/devel/vw-mib/datasets/Volkswagen/03_CAN_KMatrix
+  # Read-only inventory: 309 DBC, 272 XLSX, 106 XLS; counts include archive copies.
+  # Initial candidate: kmatrix_all/0850_Antrieb/Archiv/MQB_ACAN_KMatrix_V7.16F_20151104_MH.dbc
+  # Candidate date precedes 2016 vehicle; applicability remains unverified.
+  # Initial DBC findings: ACC_06=0x122; ACC_Status_ACC 4=ACC_OVERRIDE.
+  # TSK_06=0x120; TSK_Status 4=Uebertreten (driver override).
+  # ACC_Sollbeschleunigung_02: unsigned 11 bits, scale 0.005, offset -7.22.
+  # These confirm definitions only, not required transition timing or ECU behavior.
+  (Reviewer) -> [DatasetInventory] : {DatasetSelection}
+  [DatasetInventory] => {DatasetManifest}
+  {DatasetManifest} -> [ProtocolEvidenceReview]
+  [ProtocolEvidenceReview] => {ProtocolContractDraft}
+  {ProtocolContractDraft} -> [StockTraceComparison]
+  [StockTraceComparison] => {ProtocolEvidence}
+  {ProtocolEvidence} -> [MQBCompatibilityReview]
+  [MQBCompatibilityReview] => {CompatibilityRiskRegister}
+  {ProtocolEvidence} & {CompatibilityRiskRegister} -> [RuntimePolicyReview]
+  [RuntimePolicyReview] => {RuntimePolicyDecision}
+  branch on {RuntimePolicyDecision}.status {
+    blocked => [MissingRuntimePolicyRecord]
+    approved => [PolicyApprovalDispatch] -> [ImplementationApprovalGate]
+  }
+  # Approval requires target-specific input liveness AND release non-resumption policy.
+  # Current status is blocked; scenario approval is hypothetical, not owner consent.
+  {RuntimePolicyDecision} := { status, inputDeadlineEvidence, nonResumptionEvidence, targetRevision, ownerRouteReferences }
+  # Approval requires both protocol and compatibility evidence, not whichever arrives first.
+  # Known flags and citations: mqb-evidence/protocol-contract.md.
+  # 44 archived ACAN/FCAN DBCs compared, 2011-2021; eight workbooks extracted.
+  # Zero request raw=1444; raw=2046 is neutral; raw=2047 is error.
+  # Flag early coasting semantics, later HMS=7, and 2021 curve init codes 62/11.
+  # Sender/receiver, comments, ranges and CRC sequences need further comparison.
+  {CompatibilityRiskRegister} := { targetGroups, firmwareIdentity, topology, differences, mitigations, validationStatus, blockers }
+  <MoreEvidenceRequired> -> [EvidenceBlockerRecord]
+  
+  {DatasetManifest} := { source, revision, vehicleApplicability, radarVariant, references }
+  {ProtocolContractDraft} := { stateValues, signalEncodings, inactiveValues, requiredFields, timingRules, citations, unknowns }
+  {ProtocolEvidence} := { contract, stockTraceComparisons, confidence, contradictions, unresolvedQuestions }
+  
+  # Review ACC_06/07 requests and TSK_06 feedback, names subject to dataset verification.
+  # Separate explicit vendor requirements from inferences and measured behavior.
+  # Check units, signedness, scales, invalid values, counters, checksums, and periods.
+  # Do not assume a signal dictionary specifies ECU debounce or transition timing.
+  # Contradictions or unsupported safety-critical assumptions block approval.
+}
+
+--- Implementation Approval ---
+[ImplementationApprovalGate] := {
+  [ImplementationReview] => {ImplementationOutcome}
+  branch on {ImplementationOutcome}.status {
+    blocked => [EmitMoreEvidenceRequired] => <MoreEvidenceRequired>
+    approved => [EmitImplementationApproved] -> [Validation] : {ApprovedCandidateScope}
+    # Approval is the only entry to the validation unit.
+  }
+}
+
+--- Runtime ---
+[Runtime] := {
+  [ControllerLifecycle] => <Initialize>
+  <Initialize> -> [RuntimeInputs]
+  [RuntimeInputs] => {InputSnapshot}
+  {InputSnapshot} -> [InputLivenessCheck]
+  [InputLivenessCheck] => {InputLiveness}
+  branch on {InputLiveness}.status {
+    missing => [MissingUpdateRecord]
+    invalid => [InvalidInputRecord]
+    policyMissing => [MissingInputPolicyBlocker]
+    fresh => [FreshInputDispatch] -> [DecisionCycle]
+  }
+  # missing/invalid means no decision and no new command in this modeled cycle.
+  # Liveness uses reviewed target service/parser rules; no new numeric threshold.
+  [DecisionCycle] := {
+  {InputSnapshot} -> [AuthorityDecision]
+  [AuthorityDecision] => {StateDecision}
+  # One mutually exclusive decision, derived from current state and input ages.
+  # Priority and permission predicates are specified in the planning contract.
+  branch on {StateDecision}.kind {
+    inactive => [DecisionEmitter] => <SelectInactive>
+    authorityLost => [DecisionEmitter] => <AuthorityLost>
+    active => [ActiveDecision] => <SelectActive>
+    [ActiveDecision] -> [StateOutputGate]
+    override => [OverrideDecision] => <SelectOverride>
+    [OverrideDecision] -> [StateOutputGate]
+    fault => [DecisionEmitter] => <SelectFaulted>
+    clearFault => [DecisionEmitter] => <ClearFaultWhileDisengaged>
+    blocked => [DecisionEmitter] => <PolicyUnresolved>
+    nonResumptionUnapproved => [NonResumptionPolicyBlocker]
+  }
+  <PolicyUnresolved> -> [RuntimeBlockerRecord]
+  # Blocked is an engineering-review outcome, not an approved runtime command.
+  # Construction is ordered before inputs; state events are ordered per controller instance.
+  [MQBStateResolver] @inv ordered(controllerInstance)
+  state [MQBStateResolver] {
+    + -<Initialize>-> Inactive
+    # Duplicate initialization cannot clear an existing fault or reset a live session.
+    Inactive -<Initialize>-> Inactive
+    Active -<Initialize>-> Active
+    Override -<Initialize>-> Override
+    Faulted -<Initialize>-> Faulted
+    Inactive -<SelectInactive>-> Inactive
+    Inactive -<SelectActive>-> Active
+    Inactive -<SelectOverride>-> Override
+    Active -<SelectInactive>-> Inactive
+    Active -<SelectActive>-> Active
+    Active -<SelectOverride>-> Override
+    Override -<SelectInactive>-> Inactive
+    Override -<SelectActive>-> Active
+    Override -<SelectOverride>-> Override
+    Inactive -<AuthorityLost>-> Inactive
+    Active -<AuthorityLost>-> Inactive
+    Override -<AuthorityLost>-> Inactive
+    Faulted -<AuthorityLost>-> Faulted
+    _ -<SelectFaulted>-> Faulted
+    Faulted -<SelectInactive, SelectActive, SelectOverride>-> Faulted
+    Faulted -<ClearFaultWhileDisengaged>-> Inactive
+    Inactive -<ClearFaultWhileDisengaged>-> Inactive
+    Active -<ClearFaultWhileDisengaged>-> Inactive
+    Override -<ClearFaultWhileDisengaged>-> Inactive
+  }
+  # ClearFaultWhileDisengaged requires actual cleared fault AND independent disengagement.
+  # Faulted rejects any ordinary active/override decision by remaining faulted.
+  # State waits are intentional; missing updates require the unresolved freshness policy.
+  # Inactive: no automatic activation; Faulted: no automatic fault clearance.
+  # Active/Override: no new output without a fresh authorized update.
+  # Missing controller execution is handled independently by host/Panda watchdogs.
+  # A deadline for fresh-but-nonresuming release bridging is NOT those watchdog intervals.
+  # Retention is only memory: it has no scheduled output and no intrinsic expiry.
+  # Actuation requires a new observed input and a newly computed live authorization.
+  # The four wait findings refer to memory transitions, not a permitted actuation lease.
+  # Input deadline/non-resumption absence blocks implementation approval above.
+  [StateOutputGate] := {
+    # Binding requirement for implementation, not evaluated by Sigil's simulator:
+    # active command requires fresh inputs AND independently valid authority AND
+    # resolver state Active/Override AND no present fault AND permit AND safety.
+    # Caller-selected OutputState cannot override any of those prerequisites.
+    # Executable predicate and mutation tests: mqb-evidence/test_runtime_contract.py.
+    # Check retained state too: a stale active decision must not bypass Faulted.
+    [ResolvedStateCheck] => {OutputState}
+    # Required derivation: OutputState.kind equals retained resolver state, not caller input.
+    # Simulator treats the opaque check as data; implementation tests must prove equality.
+    branch on {OutputState}.kind {
+      faulted => [FaultOutputSuppressed]
+      inactive => [InactiveOutputSuppressed]
+      active => [ActiveOutputDispatch] -> [PermittedCommand]
+      override => [OverrideOutputDispatch] -> [PermittedCommand]
+    }
+  }
+  [PermittedCommand] := {
+  [CommandSnapshot] => {ResolvedACCCommand}
+  {ResolvedACCCommand} -> [CommandPermitCheck]
+  [CommandPermitCheck] => {CommandPermit}
+  # Permit is independently rechecked; state alone never authorizes output.
+  # Faulted resolves to a fault/inactive encoding, never an active request.
+  branch on {CommandPermit}.status {
+    denied => [SuppressedCommandRecord]
+    allowed => [EncodingDispatch] -> [AuthorizedEncoding]
+  }
+  [AuthorizedEncoding] := {
+    [MQBEncoder] => {ACCFrames}
+    {ACCFrames} -> [PandaSafety]
+    [PandaSafety] => {SafetyOutcome}
+    branch on {SafetyOutcome}.status {
+      rejected => [RuntimeRejectionRecord]
+      authorized => [TransmitDispatch] -> [CANOutput]
+    }
+  }
+  }
+  }
+
+}
+
+
+--- Independent Liveness Safeguards ---
+# Separate host/firmware execution: this is not a callback in the stopped controller.
+(WatchdogHost) -> [IndependentWatchdogs] : {ObservedLiveness}
+[IndependentWatchdogs] := {
+  [WatchdogObservation] => {WatchdogStatus}
+  branch on {WatchdogStatus}.kind {
+    healthy => [WatchdogNoChange]
+    controlDead => [HostApplyInhibit]
+    immediateDisable => [SystemImmediateDisable]
+    softDisable => [ExistingSoftDisablePath]
+    heartbeatLost => [FirmwareSilentMode]
+    engagedMismatch => [FirmwareRevokeControls]
+  }
+  # Existing service-alive rules inhibit apply; existing events drive system disable.
+  # Panda heartbeats/mismatch checks are independent of controller loop liveness.
+  # State memory may persist when a process stops; no new authorized commands follow.
+  # Queued frames and detection latency require bench evidence; no zero-latency claim.
+}
+
+--- Validation ---
+[Validation] := {
+  {CandidateRevisionPair}
+  # Boundary summaries mirror branch-local calls; these are conditional, not extra work.
+  [AutomatedGate] ?> [ValidationRecorder] : {ValidationRecord}
+  [BenchGate] ?> [ValidationRecorder] : {ValidationRecord}
+  [VehicleApprovalGate] ?> [ValidationRecorder] : {ValidationRecord}
+  [VehicleRunGate] ?> [ValidationRecorder] : {ValidationRecord}
+  [AcceptanceGate] ?> [ValidationRecorder] : {ValidationRecord}
+  [IdentityGate] ?> [ValidationRecorder] : {ValidationRecord}
+  [AutomatedGate] ?> [BenchGate] : {CandidateRevisionPair}
+  [BenchGate] ?> [VehicleApprovalGate] : {CandidateRevisionPair}
+  [VehicleApprovalGate] ?> [VehicleRunGate] : {CandidateRevisionPair}
+  [VehicleRunGate] ?> [AcceptanceGate] : {CandidateRevisionPair}
+  [AcceptanceGate] ?> [IdentityGate] : {CandidateRevisionPair}
+  [BuildIdentityGate] ?> [CandidateBuild]
+  [CandidateBuild] ?> [AutomatedGate]
+  [VehicleApprovalGate] ?> [VehicleIdentityGate]
+  [VehicleIdentityGate] ?> [VehicleRunGate]
+  [ValidationStart] -> [TransitionTestDesign]
+  [TransitionTestDesign] => {RegressionCases}
+  {RegressionCases} -> [BuildIdentityGate]
+  [BuildIdentityGate] := {
+    # Snapshot identity is checked before execution; any identity-field change
+    # revokes BOTH build and vehicle-test approvals, even if content later reverts.
+    [BuildApprovalCheck] => {BuildIdentity}
+    branch on {BuildIdentity}.status {
+      stale => [BuildBlockedRecord]
+      missing => [BuildBlockedRecord]
+      match => [BuildDispatch] -> [CandidateBuild]
+    }
+  }
+  [CandidateBuild] := {
+    [CandidateImplementation] => {CandidateRevisionPair}
+    {CandidateRevisionPair} -> [AutomatedGate]
+  }
+  [AutomatedGate] := {
+    [ControllerAndSafetyTests] => {AutomatedOutcome}
+    branch on {AutomatedOutcome}.status {
+      pass => [EmitAutomatedTestsPassed] -> [BenchGate]
+      fail => [AutomatedGateEmitValidationFailed] -> [ValidationRecorder]
+      unavailable => [AutomatedGateEmitValidationUnavailable] -> [ValidationRecorder]
+    }
+  }
+
+  [BenchGate] := {
+    [ReplayAndBenchValidation] => {BenchOutcome}
+    branch on {BenchOutcome}.status {
+      pass => [EmitBenchEvidenceReady] -> [VehicleApprovalGate]
+      fail => [BenchGateEmitValidationFailed] -> [ValidationRecorder]
+      unavailable => [BenchGateEmitValidationUnavailable] -> [ValidationRecorder]
+    }
+  }
+
+  [VehicleApprovalGate] := {
+    [VehicleTestReview] => {VehicleApproval}
+    branch on {VehicleApproval}.status {
+      blocked => [VehicleApprovalGateEmitValidationUnavailable] -> [ValidationRecorder]
+      approved => [EmitControlledTestingApproved] -> [VehicleIdentityGate]
+      stale => [VehicleApprovalGateEmitApprovalInvalidated] -> [InvalidateCandidateApprovals]
+    }
+  }
+
+  [VehicleIdentityGate] := {
+    # Approval binds this action and immutable candidate; stale/missing cannot run.
+    # Real executor must serialize check/use or consume the exact approved snapshot.
+    [VehicleCandidateCheck] => {VehicleIdentity}
+    branch on {VehicleIdentity}.status {
+      stale => [VehicleIdentityBlockedRecord]
+      missing => [VehicleIdentityBlockedRecord]
+      match => [VehicleTestDispatch] -> [VehicleRunGate]
+    }
+  }
+  [VehicleRunGate] := {
+    [ControlledVehicleValidation] => {VehicleOutcome}
+    branch on {VehicleOutcome}.status {
+      pass => [VehiclePassDispatch] -> [AcceptanceGate]
+      fail => [VehicleRunGateEmitValidationFailed] -> [ValidationRecorder]
+      unavailable => [VehicleRunGateEmitValidationUnavailable] -> [ValidationRecorder]
+    }
+  }
+  [AcceptanceGate] := {
+    [ResultsReview] => {AcceptanceOutcome}
+    branch on {AcceptanceOutcome}.status {
+      blocked => [AcceptanceGateEmitValidationUnavailable] -> [ValidationRecorder]
+      accepted => [AcceptanceDispatch] -> [IdentityGate]
+    }
+  }
+  [IdentityGate] := {
+    [ApprovalIdentityCheck] => {ApprovalIdentity}
+    # Compare the current candidate digest with EVERY approval/evidence digest.
+    # Includes controller, safety, resolved headers, firmware, configuration and target group.
+    branch on {ApprovalIdentity}.status {
+      stale => [IdentityGateEmitApprovalInvalidated] -> [InvalidateCandidateApprovals]
+      match => [SubmissionDispatch] -> [UpstreamSubmissionReview]
+      missing => [IdentityGateEmitValidationUnavailable] -> [ValidationRecorder]
+    }
+  }
+  [InvalidateCandidateApprovals] := {
+    [ApprovalRevoker] => {InvalidationRecord}
+    {InvalidationRecord} -> [ValidationRecorder]
+  }
+  # No restart from this outcome within the same episode; new candidate needs new review.
+  [ValidationRecorder] => {ValidationRecord}
+  # Validation records do not automatically authorize another attempt.
+  # Outcomes are exclusive per run: pass, fail, or unavailable; absence is never success.
+  # Approvals bind candidate, firmware, configuration, test evidence and target group.
+  # Candidate changes invalidate downstream approvals; restart the applicable gates.
+  
+  {CandidateRevisionPair} := { controllerCommit, safetyCommit, pandaFirmwareIdentity, configuration, targetGroup, resolvedHeaderIdentity, candidateDigest }
+  {RegressionCases} := { pressLag, releaseLag, rapidOverrides, disengagementPrecedence, faultPrecedence, authorizationBoundaries, counterContinuity, noControlResumption, staleInputs, restart, standstillHold, encodedBoundaries, variantCompatibility }
+  {PrioritizedDecision} := { inputIdentity, authority, fault, gasIntervention, controlReady, selectedEvent, unresolvedPolicy }
+  {ValidationRecord} := { candidateIdentity, firmwareIdentity, targetGroup, caseIdentity, outcome, evidence, failureReason }
+  {VehicleSpecificResults} := { vehicleIdentity, revisions, routeReferences, transitions, rejections, limitations }
+  
+  # Every test failure blocks progression; diagnose before rerunning later gates.
+  # Vehicle testing needs known-good rollback, matched firmware, and explicit approval.
+  # The dataset is not evidence that a patch has been tested on another vehicle.
+  # Add standstill/ESP hold, neutral/error encoding, reserved-bit and variant regressions.
+  # Faulted state is not cleared by a gas-override event; transition guards need implementation review.
+  # No dataset redistribution or upstream attachment without checking sharing rights.
+}
+
+--- Review Constraints ---
+# Override: status ACC_OVERRIDE, zero request, consistent engaged fields and HUD.
+# Safety: narrow MQB zero exception only with controls allowed and gas pressed.
+# Existing inactive allowances remain; nonzero override requests stay blocked.
+# Immediate pedal entry must supersede stale longActive and actuator requests.
+# A release latch must never defeat cancel, brake disengagement, or faults.
+# Latest controller input is not necessarily synchronous with Panda input.
+# TODO: define authoritative eligibility and prolonged non-resumption handling.

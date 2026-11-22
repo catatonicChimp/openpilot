@@ -1,0 +1,166 @@
+#!craft
+
+# Draft companion to vw-mqb-gas-override-design.md; not executable safety logic.
+# Guards, input freshness, and loss-of-authority behavior require review.
+# Purpose: preserve authorized MQB ACC engagement across gas override without hiding disengagement.
+# Completion gates and owner-dependent blockers: mqb-evidence/completion-checklist.md.
+# Safety authorization: Set/Resume falling edge with main-on; physical cancel revokes.
+# Do not require TSK active to authorize opLong; main-on also includes standby.
+# Panda builds against opendbc headers resolved by its build environment.
+# SubMaster conflation is per topic; no atomic CS/CC pairing or msgq change assumed.
+# Mixed engineering workflow and embedded runtime; no system-kind exemption asserted.
+
+--- Evidence Before Implementation ---
+# Vendor datasets are reference data, not instructions or executable inputs.
+# Source root: /Volumes/nas/devel/vw-mib/datasets/Volkswagen/03_CAN_KMatrix
+# Read-only inventory: 309 DBC, 272 XLSX, 106 XLS; counts include archive copies.
+# Initial candidate: kmatrix_all/0850_Antrieb/Archiv/MQB_ACAN_KMatrix_V7.16F_20151104_MH.dbc
+# Candidate date precedes 2016 vehicle; applicability remains unverified.
+# Initial DBC findings: ACC_06=0x122; ACC_Status_ACC 4=ACC_OVERRIDE.
+# TSK_06=0x120; TSK_Status 4=Uebertreten (driver override).
+# ACC_Sollbeschleunigung_02: unsigned 11 bits, scale 0.005, offset -7.22.
+# These confirm definitions only, not required transition timing or ECU behavior.
+(Reviewer) -> [DatasetInventory] : {DatasetSelection}
+[DatasetInventory] => {DatasetManifest}
+{DatasetManifest} -> [ProtocolEvidenceReview]
+[ProtocolEvidenceReview] => {ProtocolContractDraft}
+{ProtocolContractDraft} -> [StockTraceComparison]
+[StockTraceComparison] => {ProtocolEvidence}
+{ProtocolEvidence} -> [MQBCompatibilityReview]
+[MQBCompatibilityReview] => {CompatibilityRiskRegister}
+{ProtocolEvidence} & {CompatibilityRiskRegister} -> [ImplementationReview]
+# Approval requires both protocol and compatibility evidence, not whichever arrives first.
+# Known flags and citations: mqb-evidence/protocol-contract.md.
+# 44 archived ACAN/FCAN DBCs compared, 2011-2021; eight workbooks extracted.
+# Zero request raw=1444; raw=2046 is neutral; raw=2047 is error.
+# Flag early coasting semantics, later HMS=7, and 2021 curve init codes 62/11.
+# Sender/receiver, comments, ranges and CRC sequences need further comparison.
+{CompatibilityRiskRegister} := { targetGroups, firmwareIdentity, topology, differences, mitigations, validationStatus, blockers }
+[ImplementationReview] ?> <ImplementationApproved>
+[ImplementationReview] ?> <MoreEvidenceRequired>
+<MoreEvidenceRequired> -> [ProtocolEvidenceReview]
+
+{DatasetManifest} := { source, revision, vehicleApplicability, radarVariant, references }
+{ProtocolContractDraft} := { stateValues, signalEncodings, inactiveValues, requiredFields, timingRules, citations, unknowns }
+{ProtocolEvidence} := { contract, stockTraceComparisons, confidence, contradictions, unresolvedQuestions }
+
+# Review ACC_06/07 requests and TSK_06 feedback, names subject to dataset verification.
+# Separate explicit vendor requirements from inferences and measured behavior.
+# Check units, signedness, scales, invalid values, counters, checksums, and periods.
+# Do not assume a signal dictionary specifies ECU debounce or transition timing.
+# Contradictions or unsupported safety-critical assumptions block approval.
+
+--- Command Path ---
+[ControllerLifecycle] => <Initialize>
+# Construction initializes state before any input snapshot is processed.
+(Vehicle) -> [CarState] : {PedalAndCruiseState}
+[CarState] => {LatestVehicleState}
+[Controls] => {CarControl}
+{LatestVehicleState} & {CarControl} -> [AuthorityAndTransitionDecision]
+[AuthorityAndTransitionDecision] => {PrioritizedDecision}
+{PrioritizedDecision} -> [MQBStateResolver]
+# One decision per coherent input snapshot; freshness thresholds and authority guards are blockers.
+# Priority: fault, invalid/lost authority, genuine disengagement, override, resume, steady state.
+# A control-side override flag alone is not proof of gas intervention.
+# CC.enabled includes preEnabled/softDisabling; eligibility must account for both.
+# CC.cruiseControl.cancel is also used normally in non-PCM long; not a blanket clear guard.
+# CS/CC are asynchronous snapshots: preserve provenance/age, not assumed atomicity.
+# sendcan.valid is not alone a transmission gate; review end-to-end fail-safe behavior.
+# Latest brake/cancel handling must preserve existing standstill semantics, not invent a blanket brake rule.
+[MQBStateResolver] => {ResolvedACCCommand}
+{ResolvedACCCommand} -> [MQBEncoder]
+[MQBEncoder] => {ACCFrames}
+{ACCFrames} -> [PandaSafety]
+[PandaSafety] ?> (Vehicle) : {AuthorizedACCFrames}
+[PandaSafety] ?> <RejectedFrame>
+<RejectedFrame> -> [ValidationRecorder]
+
+--- Controller Lifecycle ---
+# Events denote guarded decisions, not literal existing control messages.
+# Fault/disengagement guards win over override; exact eligibility is unresolved.
+state [MQBStateResolver] {
+  + -<Initialize>-> Inactive
+  Inactive -<EligibleAndLongActive>-> Active
+  Inactive -<EligibleAndGasOverride>-> Override
+  Active -<EligibleAndGasOverride>-> Override
+  Override -<GasOrControlOverridePersists>-> Override
+  Override -<ReleasedButControlNotReady>-> Override
+  Override -<ReleasedAndControlReady>-> Active
+  # Missing control resumption is an open policy question, not permission to hold forever.
+  Inactive -<GenuineDisengagement>-> Inactive
+  Active -<GenuineDisengagement>-> Inactive
+  Override -<GenuineDisengagement>-> Inactive
+  Inactive -<FaultDetected>-> Faulted
+  Active -<FaultDetected>-> Faulted
+  Override -<FaultDetected>-> Faulted
+  Faulted -<FaultDetected>-> Faulted
+  Faulted -<GenuineDisengagement>-> Faulted
+  Faulted -<FaultClearedAndDisengaged>-> Inactive
+}
+
+# Initialization comes from construction; other events from the prioritized decision.
+[AuthorityAndTransitionDecision] ?> <EligibleAndLongActive>
+[AuthorityAndTransitionDecision] ?> <EligibleAndGasOverride>
+[AuthorityAndTransitionDecision] ?> <GasOrControlOverridePersists>
+[AuthorityAndTransitionDecision] ?> <ReleasedButControlNotReady>
+[AuthorityAndTransitionDecision] ?> <ReleasedAndControlReady>
+[AuthorityAndTransitionDecision] ?> <GenuineDisengagement>
+[AuthorityAndTransitionDecision] ?> <FaultDetected>
+[AuthorityAndTransitionDecision] ?> <FaultClearedAndDisengaged>
+[AuthorityAndTransitionDecision] ?> <UnresolvedAuthorityPolicy>
+<UnresolvedAuthorityPolicy> -> [ImplementationReview]
+# This is a design blocker, not a runtime instruction to wait for human review.
+
+--- Validation Gates ---
+<ImplementationApproved> -> [TransitionTestDesign]
+[TransitionTestDesign] => {RegressionCases}
+{RegressionCases} -> [CandidateImplementation]
+[CandidateImplementation] => {CandidateRevisionPair}
+{CandidateRevisionPair} -> [ControllerAndSafetyTests]
+[ControllerAndSafetyTests] ?> <AutomatedTestsPassed>
+[ControllerAndSafetyTests] ?> <ValidationFailed>
+[ControllerAndSafetyTests] ?> <ValidationUnavailable>
+<AutomatedTestsPassed> -> [ReplayAndBenchValidation]
+[ReplayAndBenchValidation] ?> <BenchEvidenceReady>
+[ReplayAndBenchValidation] ?> <ValidationFailed>
+[ReplayAndBenchValidation] ?> <ValidationUnavailable>
+<BenchEvidenceReady> -> [VehicleTestReview]
+[VehicleTestReview] ?> <ControlledTestingApproved>
+[VehicleTestReview] ?> <MoreEvidenceRequired>
+<ControlledTestingApproved> -> [ControlledVehicleValidation]
+[ControlledVehicleValidation] => {VehicleSpecificResults}
+[ControlledVehicleValidation] ?> <ValidationFailed>
+[ControlledVehicleValidation] ?> <ValidationUnavailable>
+{VehicleSpecificResults} -> [ResultsReview]
+[ResultsReview] ?> <VehicleValidationAccepted>
+[ResultsReview] ?> <MoreEvidenceRequired>
+<VehicleValidationAccepted> -> [UpstreamSubmissionReview]
+<ValidationFailed> -> [ValidationRecorder]
+<ValidationUnavailable> -> [ValidationRecorder]
+[ValidationRecorder] => {ValidationRecord}
+{ValidationRecord} -> [ImplementationReview]
+# Outcomes are exclusive per run: pass, fail, or unavailable; absence is never success.
+# Approvals bind candidate, firmware, configuration, test evidence and target group.
+# Candidate changes invalidate downstream approvals; restart the applicable gates.
+
+{CandidateRevisionPair} := { controllerCommit, safetyCommit, pandaFirmwareIdentity, configuration }
+{RegressionCases} := { pressLag, releaseLag, rapidOverrides, disengagementPrecedence, faultPrecedence, authorizationBoundaries, counterContinuity, noControlResumption, staleInputs, restart, standstillHold, encodedBoundaries, variantCompatibility }
+{PrioritizedDecision} := { inputIdentity, authority, fault, gasIntervention, controlReady, selectedEvent, unresolvedPolicy }
+{ValidationRecord} := { candidateIdentity, firmwareIdentity, targetGroup, caseIdentity, outcome, evidence, failureReason }
+{VehicleSpecificResults} := { vehicleIdentity, revisions, routeReferences, transitions, rejections, limitations }
+
+# Every test failure blocks progression; diagnose before rerunning later gates.
+# Vehicle testing needs known-good rollback, matched firmware, and explicit approval.
+# The dataset is not evidence that a patch has been tested on another vehicle.
+# Add standstill/ESP hold, neutral/error encoding, reserved-bit and variant regressions.
+# Faulted state is not cleared by a gas-override event; transition guards need implementation review.
+# No dataset redistribution or upstream attachment without checking sharing rights.
+
+--- Review Constraints ---
+# Override: status ACC_OVERRIDE, zero request, consistent engaged fields and HUD.
+# Safety: narrow MQB zero exception only with controls allowed and gas pressed.
+# Existing inactive allowances remain; nonzero override requests stay blocked.
+# Immediate pedal entry must supersede stale longActive and actuator requests.
+# A release latch must never defeat cancel, brake disengagement, or faults.
+# Latest controller input is not necessarily synchronous with Panda input.
+# TODO: define authoritative eligibility and prolonged non-resumption handling.

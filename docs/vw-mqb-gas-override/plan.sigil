@@ -1,0 +1,102 @@
+#!spec
+#% job deterministic
+
+# MQB zero-request gas-override engineering work specification.
+# This specifies deliverables and gates, not approved vehicle-control behavior.
+# Runtime design: vw-mqb-gas-override.sigil (craft; unresolved policies remain blocked).
+# Evidence contract: mqb-evidence/protocol-contract.md.
+# Test inventory and owner inputs: mqb-evidence/completion-checklist.md.
+# No deployment, firmware flashing, public-road reproduction or dataset publishing authorized.
+
+--- Engineering Job ---
+[PlanRunner] -> [EngineeringPlan] : {EvidenceBundle} => {ValidationDecision}
+[EngineeringPlan] := {
+  {EvidenceBundle}
+  {PolicyDecision}
+  {ApprovedScope}
+  {CandidateBundle}
+  {ValidationDecision}
+  [EvidencePackage]
+  [PolicyPackage]
+  [ImplementationPackage]
+  [ValidationPackage]
+  [DecisionRecord]
+
+  [EvidencePackage] -> [PolicyPackage] : {EvidenceBundle} => {PolicyDecision}
+  branch on {PolicyDecision}.status {
+    blocked => [PolicyBlock] -> [DecisionRecord] : {BlockerRecord}
+    approved => [ApprovedWork] -> [ImplementationPackage] : {ApprovedScope} => {CandidateBundle}
+  }
+  # Missing evidence is a completed blocked job, never implicit approval.
+}
+
+--- Evidence Deliverables ---
+# Leaf responsibilities are bounded offline work packages, not network services.
+# Each result includes a manifest and citations; unavailable inputs yield blockers.
+[EvidencePackage] := {
+  [AssembleEvidence] => {EvidenceBundle}
+}
+# Deliver: pinned repo revisions, resolved safety headers and firmware identity;
+# vendor signal/encoding citations and cross-revision compatibility risks;
+# failing/working route references, timestamps and decoded ACC/TSK/input transitions;
+# topology and vehicle/radar/ESP identity; input-age and queue measurements.
+# Do not equate local checkout identity with deployed firmware provenance.
+
+--- Policy Deliverables ---
+[PolicyPackage] := {
+  [EvaluateReadiness] => {PolicyDecision}
+}
+# ApprovedScope must explicitly settle: target release/fork; engagement authority;
+# immediate press entry; release bridge/non-resumption exit; input age handling;
+# pre-enable/soft-disable semantics; cancel/brake/fault priority; standstill/HMS;
+# each CAN companion field and permitted target groups; rollback and test limits.
+# Missing route/revision evidence blocks timing/vehicle-dependent policy approval.
+# State retention is not permission to actuate; no arbitrary timing constants.
+# Owner agreement on direction is not proof of protocol or safety correctness.
+
+--- Implementation Deliverables ---
+[ImplementationPackage] := {
+  [CheckBuildApproval] => {BuildReadiness}
+  branch on {BuildReadiness}.status {
+    blocked => [BuildBlock] -> [DecisionRecord] : {BlockerRecord}
+    approved => [BuildDispatch] -> [ProduceCandidate] : {ApprovedScope} => {CandidateBundle}
+  }
+}
+[ProduceCandidate] := {
+  [ImplementAndPackage] => {CandidateBundle}
+  {CandidateBundle} -> [ValidationPackage] : {CandidateBundle} => {ValidationDecision}
+}
+# Build gate compares current inputs with action-specific approved immutable scope.
+# Candidate includes controller/safety revisions, resolved headers, firmware build
+# identity, configuration, target group and evidence identities.
+# Any identity change revokes build/vehicle approvals; reverting cannot revive them.
+# Executor must serialize check/use or execute against the exact approved snapshot.
+# Add failing-first tests before changes; no unrelated vehicle/platform refactors.
+
+--- Validation Deliverables ---
+[ValidationPackage] := {
+  [EvaluateCandidate] => {ValidationDecision}
+  branch on {ValidationDecision}.status {
+    blocked => [ValidationBlock] -> [DecisionRecord] : {BlockerRecord}
+    accepted => [AcceptanceDispatch] -> [DecisionRecord] : {AcceptedEvidence}
+  }
+}
+# Acceptance requires recorded controller/encoding/safety regression results,
+# replay/bench evidence, compatibility limits and an approved rollback pair.
+# Vehicle tests require separate action-specific identity check and owner approval.
+# Test failure, unavailable tests or stale approval never count as acceptance.
+# Include simultaneous faults/cancel/gas; missing input; retained fault; restart;
+# press/release lag; standstill hold; zero/neutral/error values; counter integrity.
+# Runtime production tests must prove authority/state predicates; Sigil scenario
+# outcomes and the reference model do not establish actual timing or concurrency.
+# No submission or deployment side effects are performed by this engineering job.
+
+--- Records ---
+{EvidenceBundle} := { sourceManifest, vendorCitations, routes, deployedRevisions, topology, timingMeasurements, compatibilityRisks, missingInputs }
+{PolicyDecision} := { status, approvedScope, unresolvedPolicies, reviewers, evidenceReferences }
+{ApprovedScope} := { targetRevision, authorityRules, inputLivenessPolicy, releasePolicy, commandTable, compatibilityScope, testPlan, identity, approval }
+{BuildReadiness} := { status, currentIdentity, approvedIdentity, action, blockers }
+{CandidateBundle} := { revisions, resolvedHeaders, firmwareIdentity, configuration, targetGroup, tests, immutableIdentity }
+{ValidationDecision} := { status, results, limitations, approvalIdentity, blockers }
+{BlockerRecord} := { stage, missingEvidence, requiredDecision, candidateIdentity, reason }
+{AcceptedEvidence} := { candidateIdentity, approvedPolicies, testResults, compatibilityLimits, residualRisks }

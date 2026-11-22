@@ -1,0 +1,13 @@
+info:17:SGC163: capacity-mismatch: requests from `(ReviewHost)` reach one `[EvidenceReview]`, whose capacity is not stated — declare `@sla(…)` on `[EvidenceReview]`, or a bounded stream before it
+info:22:SGC163: capacity-mismatch: requests from `(ControllerHost)` reach one `[Runtime]`, whose capacity is not stated — declare `@sla(…)` on `[Runtime]`, or a bounded stream before it
+info:27:SGC177: large-unit: `EvidenceReview` has 13 members (over 9): it does not scan at a glance — group the members that work together into an expansion of their own, or acknowledge the size
+info:37:SGC163: capacity-mismatch: requests from `(Reviewer)` reach one `[DatasetInventory]`, whose capacity is not stated — declare `@sla(…)` on `[DatasetInventory]`, or a bounded stream before it
+info:85:SGC177: large-unit: `Runtime` has 10 members (over 9): it does not scan at a glance — group the members that work together into an expansion of their own, or acknowledge the size
+info:99:SGC177: large-unit: `DecisionCycle` has 17 members (over 9): it does not scan at a glance — group the members that work together into an expansion of their own, or acknowledge the size
+warn:128:SGC147: wait-without-timeout: `[MQBStateResolver]` waits in `Inactive` for `<SelectActive>`, `<SelectOverride>` and `<SelectFaulted>` with no timeout — a timed transition (`… @after(t)`), or `[MQBStateResolver] @inv retention(t)`
+warn:130:SGC147: wait-without-timeout: `[MQBStateResolver]` waits in `Active` for `<SelectInactive>`, `<SelectOverride>`, `<AuthorityLost>`, `<ClearFaultWhileDisengaged>` and `<SelectFaulted>` with no timeout — a timed transition (`… @after(t)`), or `[MQBStateResolver] @inv retention(t)`
+warn:133:SGC147: wait-without-timeout: `[MQBStateResolver]` waits in `Override` for `<SelectInactive>`, `<SelectActive>`, `<AuthorityLost>`, `<ClearFaultWhileDisengaged>` and `<SelectFaulted>` with no timeout — a timed transition (`… @after(t)`), or `[MQBStateResolver] @inv retention(t)`
+warn:142:SGC147: wait-without-timeout: `[MQBStateResolver]` waits in `Faulted` for `<ClearFaultWhileDisengaged>` with no timeout — a timed transition (`… @after(t)`), or `[MQBStateResolver] @inv retention(t)`
+info:202:SGC163: capacity-mismatch: requests from `(WatchdogHost)` reach one `[IndependentWatchdogs]`, whose capacity is not stated — declare `@sla(…)` on `[IndependentWatchdogs]`, or a bounded stream before it
+info:220:SGC177: large-unit: `Validation` has 17 members (over 9): it does not scan at a glance — group the members that work together into an expansion of their own, or acknowledge the size
+sigil check (spec, k=2): 12 finding(s) (0 error, 4 warn, 8 info); 0 acknowledged; 0 hidden

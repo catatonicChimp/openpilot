@@ -1,0 +1,290 @@
+{
+  "name": "ValidationPackage",
+  "kind": "expansion",
+  "face": "[ValidationPackage]",
+  "parent": "EngineeringPlan",
+  "depends_on": [
+    "EngineeringPlan"
+  ],
+  "interface": [
+    {
+      "from": "[AcceptanceDispatch]",
+      "to": "[DecisionRecord]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{AcceptedEvidence}",
+      "lines": [
+        81
+      ]
+    },
+    {
+      "from": "[ValidationBlock]",
+      "to": "[DecisionRecord]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{BlockerRecord}",
+      "lines": [
+        80
+      ]
+    },
+    {
+      "from": "{CandidateBundle}",
+      "to": "[ValidationPackage]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{CandidateBundle} => {ValidationDecision}",
+      "lines": [
+        67
+      ]
+    },
+    {
+      "from": "[EvaluateCandidate]",
+      "to": "{ValidationDecision}",
+      "arrow": "=>",
+      "mode": "return",
+      "lines": [
+        78
+      ]
+    }
+  ],
+  "shapes": [
+    {
+      "glyph": "{AcceptedEvidence}",
+      "fields": [
+        {
+          "name": "approvedPolicies"
+        },
+        {
+          "name": "candidateIdentity"
+        },
+        {
+          "name": "compatibilityLimits"
+        },
+        {
+          "name": "residualRisks"
+        },
+        {
+          "name": "testResults"
+        }
+      ]
+    },
+    {
+      "glyph": "{BlockerRecord}",
+      "fields": [
+        {
+          "name": "candidateIdentity"
+        },
+        {
+          "name": "missingEvidence"
+        },
+        {
+          "name": "reason"
+        },
+        {
+          "name": "requiredDecision"
+        },
+        {
+          "name": "stage"
+        }
+      ]
+    },
+    {
+      "glyph": "{CandidateBundle}",
+      "fields": [
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "firmwareIdentity"
+        },
+        {
+          "name": "immutableIdentity"
+        },
+        {
+          "name": "resolvedHeaders"
+        },
+        {
+          "name": "revisions"
+        },
+        {
+          "name": "targetGroup"
+        },
+        {
+          "name": "tests"
+        }
+      ]
+    },
+    {
+      "glyph": "{ValidationDecision}",
+      "fields": [
+        {
+          "name": "approvalIdentity"
+        },
+        {
+          "name": "blockers"
+        },
+        {
+          "name": "limitations"
+        },
+        {
+          "name": "results"
+        },
+        {
+          "name": "status"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "kind": "branch",
+      "header": "{ValidationDecision}.status"
+    }
+  ],
+  "components": [
+    {
+      "name": "AcceptanceDispatch",
+      "kind": "service",
+      "glyph": "[AcceptanceDispatch]",
+      "home": "ValidationPackage",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "[DecisionRecord]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{AcceptedEvidence}",
+          "lines": [
+            81
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{AcceptedEvidence}",
+          "fields": [
+            {
+              "name": "approvedPolicies"
+            },
+            {
+              "name": "candidateIdentity"
+            },
+            {
+              "name": "compatibilityLimits"
+            },
+            {
+              "name": "residualRisks"
+            },
+            {
+              "name": "testResults"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        81
+      ],
+      "hashes": {
+        "interface": "7e64e097d7e58ea4",
+        "body": "5756f5dba5272c9b"
+      }
+    },
+    {
+      "name": "EvaluateCandidate",
+      "kind": "service",
+      "glyph": "[EvaluateCandidate]",
+      "home": "ValidationPackage",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "{ValidationDecision}",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            78
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{ValidationDecision}",
+          "fields": [
+            {
+              "name": "approvalIdentity"
+            },
+            {
+              "name": "blockers"
+            },
+            {
+              "name": "limitations"
+            },
+            {
+              "name": "results"
+            },
+            {
+              "name": "status"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        78
+      ],
+      "hashes": {
+        "interface": "0fdee1ce47da3d45",
+        "body": "f4eacddfcce41807"
+      }
+    },
+    {
+      "name": "ValidationBlock",
+      "kind": "service",
+      "glyph": "[ValidationBlock]",
+      "home": "ValidationPackage",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "[DecisionRecord]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{BlockerRecord}",
+          "lines": [
+            80
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{BlockerRecord}",
+          "fields": [
+            {
+              "name": "candidateIdentity"
+            },
+            {
+              "name": "missingEvidence"
+            },
+            {
+              "name": "reason"
+            },
+            {
+              "name": "requiredDecision"
+            },
+            {
+              "name": "stage"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        80
+      ],
+      "hashes": {
+        "interface": "18bffc6ab3179d75",
+        "body": "43dcd5c893f35d67"
+      }
+    }
+  ],
+  "hashes": {
+    "interface": "df0d1aeee32c1ab6",
+    "body": "60fab2c641b7eda0"
+  }
+}

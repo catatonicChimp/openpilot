@@ -1,0 +1,210 @@
+{
+  "name": "MQBStateResolver=Active+StateDecision.kind=authorityLost",
+  "label": "starts with [MQBStateResolver] in Active + arm authorityLost",
+  "outcome": "ok",
+  "frames": 136,
+  "states": [
+    "[MQBStateResolver] Inactive"
+  ],
+  "failed": [],
+  "routes": [],
+  "ignored": [],
+  "replayed": [],
+  "waiting": [],
+  "open": [],
+  "bounds": [],
+  "steps": [
+    {
+      "frame": 0,
+      "tick": 0,
+      "text": "[MQBStateResolver] starts in Active; episode 1 begins at (ReviewHost); (ReviewHost) calls [EvidenceReview] with {ReviewSession}"
+    },
+    {
+      "frame": 5,
+      "tick": 5,
+      "text": "(Reviewer) calls [DatasetInventory] with {DatasetSelection}"
+    },
+    {
+      "frame": 10,
+      "tick": 10,
+      "text": "[DatasetInventory] produces {DatasetManifest}"
+    },
+    {
+      "frame": 15,
+      "tick": 15,
+      "text": "{DatasetManifest} calls [ProtocolEvidenceReview]"
+    },
+    {
+      "frame": 20,
+      "tick": 20,
+      "text": "[ProtocolEvidenceReview] produces {ProtocolContractDraft}"
+    },
+    {
+      "frame": 25,
+      "tick": 25,
+      "text": "{ProtocolContractDraft} calls [StockTraceComparison]"
+    },
+    {
+      "frame": 30,
+      "tick": 30,
+      "text": "[StockTraceComparison] produces {ProtocolEvidence}"
+    },
+    {
+      "frame": 35,
+      "tick": 35,
+      "text": "{ProtocolEvidence} calls [MQBCompatibilityReview]"
+    },
+    {
+      "frame": 40,
+      "tick": 40,
+      "text": "[MQBCompatibilityReview] produces {CompatibilityRiskRegister}"
+    },
+    {
+      "frame": 45,
+      "tick": 45,
+      "text": "{CompatibilityRiskRegister} calls [ImplementationReview]"
+    },
+    {
+      "frame": 49,
+      "tick": 49,
+      "text": "{CompatibilityRiskRegister} reaches the join into [ImplementationReview]; {ProtocolEvidence} calls [ImplementationReview]"
+    },
+    {
+      "frame": 53,
+      "tick": 53,
+      "text": "{ProtocolEvidence} reaches the join into [ImplementationReview]; the join is complete: [ImplementationReview] runs"
+    },
+    {
+      "frame": 54,
+      "tick": 54,
+      "text": "[ImplementationReview] produces {ImplementationOutcome}"
+    },
+    {
+      "frame": 59,
+      "tick": 59,
+      "text": "branch {ImplementationOutcome}.status takes ‹blocked›"
+    },
+    {
+      "frame": 64,
+      "tick": 64,
+      "text": "[EmitMoreEvidenceRequired] produces into <MoreEvidenceRequired>"
+    },
+    {
+      "frame": 69,
+      "tick": 69,
+      "text": "<MoreEvidenceRequired> calls [EvidenceBlockerRecord]"
+    },
+    {
+      "frame": 75,
+      "tick": 75,
+      "text": "episode 2 begins at (ControllerHost); (ControllerHost) calls [Runtime] with {RuntimeSession}"
+    },
+    {
+      "frame": 80,
+      "tick": 80,
+      "text": "[ControllerLifecycle] produces into <Initialize>"
+    },
+    {
+      "frame": 85,
+      "tick": 85,
+      "text": "<Initialize> calls [RuntimeInputs]; <Initialize> drives [MQBStateResolver]"
+    },
+    {
+      "frame": 89,
+      "tick": 89,
+      "text": "[MQBStateResolver] moves Active → Active on <Initialize>"
+    },
+    {
+      "frame": 90,
+      "tick": 90,
+      "text": "[RuntimeInputs] produces {InputSnapshot}"
+    },
+    {
+      "frame": 95,
+      "tick": 95,
+      "text": "{InputSnapshot} calls [AuthorityDecision]"
+    },
+    {
+      "frame": 100,
+      "tick": 100,
+      "text": "[AuthorityDecision] produces {StateDecision}"
+    },
+    {
+      "frame": 105,
+      "tick": 105,
+      "text": "branch {StateDecision}.kind takes ‹authorityLost›"
+    },
+    {
+      "frame": 110,
+      "tick": 110,
+      "text": "[DecisionEmitter] produces into <AuthorityLost>"
+    },
+    {
+      "frame": 115,
+      "tick": 115,
+      "text": "[MQBStateResolver] produces {ResolvedACCCommand}; <AuthorityLost> drives [MQBStateResolver]"
+    },
+    {
+      "frame": 119,
+      "tick": 119,
+      "text": "[MQBStateResolver] moves Active → Inactive on <AuthorityLost>"
+    },
+    {
+      "frame": 120,
+      "tick": 120,
+      "text": "{ResolvedACCCommand} calls [MQBEncoder]"
+    },
+    {
+      "frame": 125,
+      "tick": 125,
+      "text": "[MQBEncoder] produces {ACCFrames}"
+    },
+    {
+      "frame": 130,
+      "tick": 130,
+      "text": "{ACCFrames} calls [PandaSafety]"
+    },
+    {
+      "frame": 135,
+      "tick": 135,
+      "text": "the run ends: ok"
+    }
+  ],
+  "log": [
+    "t000 conventions: written order; entries one after another; ?> not taken by default; the first member wins a race / alternative / branch",
+    "t000 starts: [MQBStateResolver] in Active",
+    "t000 episode 1: (ReviewHost)",
+    "t000 (ReviewHost) -> [EvidenceReview] : {ReviewSession}",
+    "t005 (Reviewer) -> [DatasetInventory] : {DatasetSelection}",
+    "t010 [DatasetInventory] => {DatasetManifest}",
+    "t015 {DatasetManifest} -> [ProtocolEvidenceReview]",
+    "t020 [ProtocolEvidenceReview] => {ProtocolContractDraft}",
+    "t025 {ProtocolContractDraft} -> [StockTraceComparison]",
+    "t030 [StockTraceComparison] => {ProtocolEvidence}",
+    "t035 {ProtocolEvidence} -> [MQBCompatibilityReview]",
+    "t040 [MQBCompatibilityReview] => {CompatibilityRiskRegister}",
+    "t045 {CompatibilityRiskRegister} -> [ImplementationReview]",
+    "t049 deposit: {CompatibilityRiskRegister} at [ImplementationReview]",
+    "t049 {ProtocolEvidence} -> [ImplementationReview]",
+    "t054 [ImplementationReview] => {ImplementationOutcome}",
+    "t059 branch {ImplementationOutcome}.status: blocked",
+    "t064 [EmitMoreEvidenceRequired] => <MoreEvidenceRequired>",
+    "t069 <MoreEvidenceRequired> -> [EvidenceBlockerRecord]",
+    "t075 episode 2: (ControllerHost)",
+    "t075 (ControllerHost) -> [Runtime] : {RuntimeSession}",
+    "t080 [ControllerLifecycle] => <Initialize>",
+    "t085 <Initialize> -> [RuntimeInputs]",
+    "t089 [MQBStateResolver] Active -<Initialize>-> Active",
+    "t090 [RuntimeInputs] => {InputSnapshot}",
+    "t095 {InputSnapshot} -> [AuthorityDecision]",
+    "t100 [AuthorityDecision] => {StateDecision}",
+    "t105 branch {StateDecision}.kind: authorityLost",
+    "t110 [DecisionEmitter] => <AuthorityLost>",
+    "t115 [MQBStateResolver] => {ResolvedACCCommand}",
+    "t119 [MQBStateResolver] Active -<AuthorityLost>-> Inactive",
+    "t120 {ResolvedACCCommand} -> [MQBEncoder]",
+    "t125 [MQBEncoder] => {ACCFrames}",
+    "t130 {ACCFrames} -> [PandaSafety]",
+    "t135 done: ok"
+  ]
+}

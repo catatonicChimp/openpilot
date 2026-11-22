@@ -1,0 +1,457 @@
+{
+  "name": "ImplementationPackage",
+  "kind": "expansion",
+  "face": "[ImplementationPackage]",
+  "parent": "EngineeringPlan",
+  "depends_on": [
+    "EngineeringPlan",
+    "ProduceCandidate"
+  ],
+  "interface": [
+    {
+      "from": "[ApprovedWork]",
+      "to": "[ImplementationPackage]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{ApprovedScope} => {CandidateBundle}",
+      "lines": [
+        28
+      ]
+    },
+    {
+      "from": "[BuildBlock]",
+      "to": "[DecisionRecord]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{BlockerRecord}",
+      "lines": [
+        61
+      ]
+    }
+  ],
+  "shapes": [
+    {
+      "glyph": "{ApprovedScope}",
+      "fields": [
+        {
+          "name": "approval"
+        },
+        {
+          "name": "authorityRules"
+        },
+        {
+          "name": "commandTable"
+        },
+        {
+          "name": "compatibilityScope"
+        },
+        {
+          "name": "identity"
+        },
+        {
+          "name": "inputLivenessPolicy"
+        },
+        {
+          "name": "releasePolicy"
+        },
+        {
+          "name": "targetRevision"
+        },
+        {
+          "name": "testPlan"
+        }
+      ]
+    },
+    {
+      "glyph": "{BlockerRecord}",
+      "fields": [
+        {
+          "name": "candidateIdentity"
+        },
+        {
+          "name": "missingEvidence"
+        },
+        {
+          "name": "reason"
+        },
+        {
+          "name": "requiredDecision"
+        },
+        {
+          "name": "stage"
+        }
+      ]
+    },
+    {
+      "glyph": "{CandidateBundle}",
+      "fields": [
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "firmwareIdentity"
+        },
+        {
+          "name": "immutableIdentity"
+        },
+        {
+          "name": "resolvedHeaders"
+        },
+        {
+          "name": "revisions"
+        },
+        {
+          "name": "targetGroup"
+        },
+        {
+          "name": "tests"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "from": "[BuildDispatch]",
+      "to": "[ProduceCandidate]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{ApprovedScope} => {CandidateBundle}",
+      "lines": [
+        62
+      ]
+    },
+    {
+      "from": "[CheckBuildApproval]",
+      "to": "{BuildReadiness}",
+      "arrow": "=>",
+      "mode": "return",
+      "lines": [
+        59
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "kind": "branch",
+      "header": "{BuildReadiness}.status"
+    }
+  ],
+  "components": [
+    {
+      "name": "BuildBlock",
+      "kind": "service",
+      "glyph": "[BuildBlock]",
+      "home": "ImplementationPackage",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "[DecisionRecord]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{BlockerRecord}",
+          "lines": [
+            61
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{BlockerRecord}",
+          "fields": [
+            {
+              "name": "candidateIdentity"
+            },
+            {
+              "name": "missingEvidence"
+            },
+            {
+              "name": "reason"
+            },
+            {
+              "name": "requiredDecision"
+            },
+            {
+              "name": "stage"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        61
+      ],
+      "hashes": {
+        "interface": "18bffc6ab3179d75",
+        "body": "a68ea3b09c82c9fa"
+      }
+    },
+    {
+      "name": "BuildDispatch",
+      "kind": "service",
+      "glyph": "[BuildDispatch]",
+      "home": "ImplementationPackage",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "[ProduceCandidate]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{ApprovedScope} => {CandidateBundle}",
+          "lines": [
+            62
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{ApprovedScope}",
+          "fields": [
+            {
+              "name": "approval"
+            },
+            {
+              "name": "authorityRules"
+            },
+            {
+              "name": "commandTable"
+            },
+            {
+              "name": "compatibilityScope"
+            },
+            {
+              "name": "identity"
+            },
+            {
+              "name": "inputLivenessPolicy"
+            },
+            {
+              "name": "releasePolicy"
+            },
+            {
+              "name": "targetRevision"
+            },
+            {
+              "name": "testPlan"
+            }
+          ]
+        },
+        {
+          "glyph": "{CandidateBundle}",
+          "fields": [
+            {
+              "name": "configuration"
+            },
+            {
+              "name": "firmwareIdentity"
+            },
+            {
+              "name": "immutableIdentity"
+            },
+            {
+              "name": "resolvedHeaders"
+            },
+            {
+              "name": "revisions"
+            },
+            {
+              "name": "targetGroup"
+            },
+            {
+              "name": "tests"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        62
+      ],
+      "hashes": {
+        "interface": "11b693556405c87c",
+        "body": "9637f9ee750b64f8"
+      }
+    },
+    {
+      "name": "CheckBuildApproval",
+      "kind": "service",
+      "glyph": "[CheckBuildApproval]",
+      "home": "ImplementationPackage",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "{BuildReadiness}",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            59
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{BuildReadiness}",
+          "fields": [
+            {
+              "name": "action"
+            },
+            {
+              "name": "approvedIdentity"
+            },
+            {
+              "name": "blockers"
+            },
+            {
+              "name": "currentIdentity"
+            },
+            {
+              "name": "status"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        59
+      ],
+      "hashes": {
+        "interface": "95ae5d810690957d",
+        "body": "f62de31ba0acca58"
+      }
+    },
+    {
+      "name": "ProduceCandidate",
+      "kind": "service",
+      "glyph": "[ProduceCandidate]",
+      "home": "ImplementationPackage",
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "[BuildDispatch]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{ApprovedScope} => {CandidateBundle}",
+          "lines": [
+            62
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{ApprovedScope}",
+          "fields": [
+            {
+              "name": "approval"
+            },
+            {
+              "name": "authorityRules"
+            },
+            {
+              "name": "commandTable"
+            },
+            {
+              "name": "compatibilityScope"
+            },
+            {
+              "name": "identity"
+            },
+            {
+              "name": "inputLivenessPolicy"
+            },
+            {
+              "name": "releasePolicy"
+            },
+            {
+              "name": "targetRevision"
+            },
+            {
+              "name": "testPlan"
+            }
+          ]
+        },
+        {
+          "glyph": "{CandidateBundle}",
+          "fields": [
+            {
+              "name": "configuration"
+            },
+            {
+              "name": "firmwareIdentity"
+            },
+            {
+              "name": "immutableIdentity"
+            },
+            {
+              "name": "resolvedHeaders"
+            },
+            {
+              "name": "revisions"
+            },
+            {
+              "name": "targetGroup"
+            },
+            {
+              "name": "tests"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        62,
+        65
+      ],
+      "hashes": {
+        "interface": "63dd1729b8b2186a",
+        "body": "5b8e9db777cbba55"
+      }
+    },
+    {
+      "name": "BuildReadiness",
+      "kind": "data",
+      "glyph": "{BuildReadiness}",
+      "home": "ImplementationPackage",
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "[CheckBuildApproval]",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            59
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{BuildReadiness}",
+          "fields": [
+            {
+              "name": "action"
+            },
+            {
+              "name": "approvedIdentity"
+            },
+            {
+              "name": "blockers"
+            },
+            {
+              "name": "currentIdentity"
+            },
+            {
+              "name": "status"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        59,
+        60,
+        98
+      ],
+      "hashes": {
+        "interface": "7d19b1a189fcadc5",
+        "body": "9228156a22c59095"
+      }
+    }
+  ],
+  "hashes": {
+    "interface": "918922e83ef8cb6b",
+    "body": "8c905b76bd93457f"
+  }
+}

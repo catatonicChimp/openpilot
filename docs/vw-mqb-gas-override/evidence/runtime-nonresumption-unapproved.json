@@ -1,0 +1,209 @@
+{
+  "name": "InputLiveness.status=fresh+StateDecision.kind=nonResumptionUnapproved+CommandPermit.status=allowed+SafetyOutcome.status=authorized",
+  "label": "arm fresh + arm nonResumptionUnapproved + arm allowed + arm authorized",
+  "outcome": "ok",
+  "frames": 142,
+  "states": [
+    "[MQBStateResolver] Inactive"
+  ],
+  "failed": [],
+  "routes": [],
+  "ignored": [],
+  "waiting": [],
+  "open": [],
+  "bounds": [],
+  "steps": [
+    {
+      "frame": 0,
+      "tick": 0,
+      "text": "episode 1 begins at (ReviewHost); (ReviewHost) calls [EvidenceReview] with {ReviewSession}"
+    },
+    {
+      "frame": 5,
+      "tick": 5,
+      "text": "(Reviewer) calls [DatasetInventory] with {DatasetSelection}"
+    },
+    {
+      "frame": 10,
+      "tick": 10,
+      "text": "[DatasetInventory] produces {DatasetManifest}"
+    },
+    {
+      "frame": 15,
+      "tick": 15,
+      "text": "{DatasetManifest} calls [ProtocolEvidenceReview]"
+    },
+    {
+      "frame": 20,
+      "tick": 20,
+      "text": "[ProtocolEvidenceReview] produces {ProtocolContractDraft}"
+    },
+    {
+      "frame": 25,
+      "tick": 25,
+      "text": "{ProtocolContractDraft} calls [StockTraceComparison]"
+    },
+    {
+      "frame": 30,
+      "tick": 30,
+      "text": "[StockTraceComparison] produces {ProtocolEvidence}"
+    },
+    {
+      "frame": 35,
+      "tick": 35,
+      "text": "{ProtocolEvidence} calls [MQBCompatibilityReview]"
+    },
+    {
+      "frame": 40,
+      "tick": 40,
+      "text": "[MQBCompatibilityReview] produces {CompatibilityRiskRegister}"
+    },
+    {
+      "frame": 45,
+      "tick": 45,
+      "text": "{CompatibilityRiskRegister} calls [RuntimePolicyReview]"
+    },
+    {
+      "frame": 49,
+      "tick": 49,
+      "text": "{CompatibilityRiskRegister} reaches the join into [RuntimePolicyReview]; {ProtocolEvidence} calls [RuntimePolicyReview]"
+    },
+    {
+      "frame": 53,
+      "tick": 53,
+      "text": "{ProtocolEvidence} reaches the join into [RuntimePolicyReview]; the join is complete: [RuntimePolicyReview] runs"
+    },
+    {
+      "frame": 54,
+      "tick": 54,
+      "text": "[RuntimePolicyReview] produces {RuntimePolicyDecision}"
+    },
+    {
+      "frame": 59,
+      "tick": 59,
+      "text": "branch {RuntimePolicyDecision}.status takes ‹blocked›"
+    },
+    {
+      "frame": 64,
+      "tick": 64,
+      "text": "<MoreEvidenceRequired> calls [EvidenceBlockerRecord]"
+    },
+    {
+      "frame": 70,
+      "tick": 70,
+      "text": "episode 2 begins at (ControllerHost); (ControllerHost) calls [Runtime] with {RuntimeSession}"
+    },
+    {
+      "frame": 75,
+      "tick": 75,
+      "text": "[ControllerLifecycle] produces into <Initialize>"
+    },
+    {
+      "frame": 80,
+      "tick": 80,
+      "text": "<Initialize> calls [RuntimeInputs]; <Initialize> drives [MQBStateResolver]"
+    },
+    {
+      "frame": 84,
+      "tick": 84,
+      "text": "[MQBStateResolver] moves + → Inactive on <Initialize>"
+    },
+    {
+      "frame": 85,
+      "tick": 85,
+      "text": "[RuntimeInputs] produces {InputSnapshot}"
+    },
+    {
+      "frame": 90,
+      "tick": 90,
+      "text": "{InputSnapshot} calls [InputLivenessCheck]"
+    },
+    {
+      "frame": 95,
+      "tick": 95,
+      "text": "[InputLivenessCheck] produces {InputLiveness}"
+    },
+    {
+      "frame": 100,
+      "tick": 100,
+      "text": "branch {InputLiveness}.status takes ‹fresh›"
+    },
+    {
+      "frame": 105,
+      "tick": 105,
+      "text": "[FreshInputDispatch] calls [DecisionCycle]"
+    },
+    {
+      "frame": 110,
+      "tick": 110,
+      "text": "{InputSnapshot} calls [AuthorityDecision]"
+    },
+    {
+      "frame": 115,
+      "tick": 115,
+      "text": "[AuthorityDecision] produces {StateDecision}"
+    },
+    {
+      "frame": 120,
+      "tick": 120,
+      "text": "branch {StateDecision}.kind takes ‹nonResumptionUnapproved›"
+    },
+    {
+      "frame": 126,
+      "tick": 126,
+      "text": "episode 3 begins at (WatchdogHost); (WatchdogHost) calls [IndependentWatchdogs] with {ObservedLiveness}"
+    },
+    {
+      "frame": 131,
+      "tick": 131,
+      "text": "[WatchdogObservation] produces {WatchdogStatus}"
+    },
+    {
+      "frame": 136,
+      "tick": 136,
+      "text": "branch {WatchdogStatus}.kind takes ‹healthy›"
+    },
+    {
+      "frame": 141,
+      "tick": 141,
+      "text": "the run ends: ok"
+    }
+  ],
+  "log": [
+    "t000 conventions: written order; entries one after another; ?> not taken by default; the first member wins a race / alternative / branch",
+    "t000 episode 1: (ReviewHost)",
+    "t000 (ReviewHost) -> [EvidenceReview] : {ReviewSession}",
+    "t005 (Reviewer) -> [DatasetInventory] : {DatasetSelection}",
+    "t010 [DatasetInventory] => {DatasetManifest}",
+    "t015 {DatasetManifest} -> [ProtocolEvidenceReview]",
+    "t020 [ProtocolEvidenceReview] => {ProtocolContractDraft}",
+    "t025 {ProtocolContractDraft} -> [StockTraceComparison]",
+    "t030 [StockTraceComparison] => {ProtocolEvidence}",
+    "t035 {ProtocolEvidence} -> [MQBCompatibilityReview]",
+    "t040 [MQBCompatibilityReview] => {CompatibilityRiskRegister}",
+    "t045 {CompatibilityRiskRegister} -> [RuntimePolicyReview]",
+    "t049 deposit: {CompatibilityRiskRegister} at [RuntimePolicyReview]",
+    "t049 {ProtocolEvidence} -> [RuntimePolicyReview]",
+    "t054 [RuntimePolicyReview] => {RuntimePolicyDecision}",
+    "t059 branch {RuntimePolicyDecision}.status: blocked",
+    "t064 <MoreEvidenceRequired> -> [EvidenceBlockerRecord]",
+    "t070 episode 2: (ControllerHost)",
+    "t070 (ControllerHost) -> [Runtime] : {RuntimeSession}",
+    "t075 [ControllerLifecycle] => <Initialize>",
+    "t080 <Initialize> -> [RuntimeInputs]",
+    "t084 [MQBStateResolver] + -<Initialize>-> Inactive",
+    "t085 [RuntimeInputs] => {InputSnapshot}",
+    "t090 {InputSnapshot} -> [InputLivenessCheck]",
+    "t095 [InputLivenessCheck] => {InputLiveness}",
+    "t100 branch {InputLiveness}.status: fresh",
+    "t105 [FreshInputDispatch] -> [DecisionCycle]",
+    "t110 {InputSnapshot} -> [AuthorityDecision]",
+    "t115 [AuthorityDecision] => {StateDecision}",
+    "t120 branch {StateDecision}.kind: nonResumptionUnapproved",
+    "t126 episode 3: (WatchdogHost)",
+    "t126 (WatchdogHost) -> [IndependentWatchdogs] : {ObservedLiveness}",
+    "t131 [WatchdogObservation] => {WatchdogStatus}",
+    "t136 branch {WatchdogStatus}.kind: healthy",
+    "t141 done: ok"
+  ]
+}

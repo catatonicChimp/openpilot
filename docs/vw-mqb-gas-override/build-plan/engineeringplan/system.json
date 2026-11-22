@@ -1,0 +1,1142 @@
+{
+  "name": "EngineeringPlan",
+  "kind": "expansion",
+  "face": "[EngineeringPlan]",
+  "parent": "vw-mqb-gas-override-plan",
+  "depends_on": [
+    "EvidencePackage",
+    "ImplementationPackage",
+    "PolicyPackage",
+    "ValidationPackage"
+  ],
+  "interface": [
+    {
+      "from": "[AcceptanceDispatch]",
+      "to": "[DecisionRecord]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{AcceptedEvidence}",
+      "lines": [
+        81
+      ]
+    },
+    {
+      "from": "[BuildBlock]",
+      "to": "[DecisionRecord]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{BlockerRecord}",
+      "lines": [
+        61
+      ]
+    },
+    {
+      "from": "[PlanRunner]",
+      "to": "[EngineeringPlan]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{EvidenceBundle} => {ValidationDecision}",
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "[ValidationBlock]",
+      "to": "[DecisionRecord]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{BlockerRecord}",
+      "lines": [
+        80
+      ]
+    },
+    {
+      "from": "[AssembleEvidence]",
+      "to": "{EvidenceBundle}",
+      "arrow": "=>",
+      "mode": "return",
+      "lines": [
+        37
+      ]
+    },
+    {
+      "from": "[EvaluateCandidate]",
+      "to": "{ValidationDecision}",
+      "arrow": "=>",
+      "mode": "return",
+      "lines": [
+        78
+      ]
+    },
+    {
+      "from": "[EvaluateReadiness]",
+      "to": "{PolicyDecision}",
+      "arrow": "=>",
+      "mode": "return",
+      "lines": [
+        47
+      ]
+    },
+    {
+      "from": "[ImplementAndPackage]",
+      "to": "{CandidateBundle}",
+      "arrow": "=>",
+      "mode": "return",
+      "lines": [
+        66
+      ]
+    }
+  ],
+  "shapes": [
+    {
+      "glyph": "{AcceptedEvidence}",
+      "fields": [
+        {
+          "name": "approvedPolicies"
+        },
+        {
+          "name": "candidateIdentity"
+        },
+        {
+          "name": "compatibilityLimits"
+        },
+        {
+          "name": "residualRisks"
+        },
+        {
+          "name": "testResults"
+        }
+      ]
+    },
+    {
+      "glyph": "{BlockerRecord}",
+      "fields": [
+        {
+          "name": "candidateIdentity"
+        },
+        {
+          "name": "missingEvidence"
+        },
+        {
+          "name": "reason"
+        },
+        {
+          "name": "requiredDecision"
+        },
+        {
+          "name": "stage"
+        }
+      ]
+    },
+    {
+      "glyph": "{CandidateBundle}",
+      "fields": [
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "firmwareIdentity"
+        },
+        {
+          "name": "immutableIdentity"
+        },
+        {
+          "name": "resolvedHeaders"
+        },
+        {
+          "name": "revisions"
+        },
+        {
+          "name": "targetGroup"
+        },
+        {
+          "name": "tests"
+        }
+      ]
+    },
+    {
+      "glyph": "{EvidenceBundle}",
+      "fields": [
+        {
+          "name": "compatibilityRisks"
+        },
+        {
+          "name": "deployedRevisions"
+        },
+        {
+          "name": "missingInputs"
+        },
+        {
+          "name": "routes"
+        },
+        {
+          "name": "sourceManifest"
+        },
+        {
+          "name": "timingMeasurements"
+        },
+        {
+          "name": "topology"
+        },
+        {
+          "name": "vendorCitations"
+        }
+      ]
+    },
+    {
+      "glyph": "{PolicyDecision}",
+      "fields": [
+        {
+          "name": "approvedScope"
+        },
+        {
+          "name": "evidenceReferences"
+        },
+        {
+          "name": "reviewers"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "unresolvedPolicies"
+        }
+      ]
+    },
+    {
+      "glyph": "{ValidationDecision}",
+      "fields": [
+        {
+          "name": "approvalIdentity"
+        },
+        {
+          "name": "blockers"
+        },
+        {
+          "name": "limitations"
+        },
+        {
+          "name": "results"
+        },
+        {
+          "name": "status"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "from": "[ApprovedWork]",
+      "to": "[ImplementationPackage]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{ApprovedScope} => {CandidateBundle}",
+      "lines": [
+        28
+      ]
+    },
+    {
+      "from": "[EvidencePackage]",
+      "to": "[PolicyPackage]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{EvidenceBundle} => {PolicyDecision}",
+      "lines": [
+        25
+      ]
+    },
+    {
+      "from": "[PolicyBlock]",
+      "to": "[DecisionRecord]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{BlockerRecord}",
+      "lines": [
+        27
+      ]
+    },
+    {
+      "from": "{CandidateBundle}",
+      "to": "[ValidationPackage]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{CandidateBundle} => {ValidationDecision}",
+      "lines": [
+        67
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "kind": "branch",
+      "header": "{PolicyDecision}.status"
+    }
+  ],
+  "components": [
+    {
+      "name": "ApprovedWork",
+      "kind": "service",
+      "glyph": "[ApprovedWork]",
+      "home": "EngineeringPlan",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "[ImplementationPackage]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{ApprovedScope} => {CandidateBundle}",
+          "lines": [
+            28
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{ApprovedScope}",
+          "fields": [
+            {
+              "name": "approval"
+            },
+            {
+              "name": "authorityRules"
+            },
+            {
+              "name": "commandTable"
+            },
+            {
+              "name": "compatibilityScope"
+            },
+            {
+              "name": "identity"
+            },
+            {
+              "name": "inputLivenessPolicy"
+            },
+            {
+              "name": "releasePolicy"
+            },
+            {
+              "name": "targetRevision"
+            },
+            {
+              "name": "testPlan"
+            }
+          ]
+        },
+        {
+          "glyph": "{CandidateBundle}",
+          "fields": [
+            {
+              "name": "configuration"
+            },
+            {
+              "name": "firmwareIdentity"
+            },
+            {
+              "name": "immutableIdentity"
+            },
+            {
+              "name": "resolvedHeaders"
+            },
+            {
+              "name": "revisions"
+            },
+            {
+              "name": "targetGroup"
+            },
+            {
+              "name": "tests"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        28
+      ],
+      "hashes": {
+        "interface": "9dc0b96c7c262c32",
+        "body": "d0ba5366d291b760"
+      }
+    },
+    {
+      "name": "DecisionRecord",
+      "kind": "service",
+      "glyph": "[DecisionRecord]",
+      "home": "EngineeringPlan",
+      "also_in": [
+        "ImplementationPackage",
+        "ValidationPackage"
+      ],
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "[AcceptanceDispatch]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{AcceptedEvidence}",
+          "lines": [
+            81
+          ]
+        },
+        {
+          "dir": "in",
+          "peer": "[BuildBlock]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{BlockerRecord}",
+          "lines": [
+            61
+          ]
+        },
+        {
+          "dir": "in",
+          "peer": "[PolicyBlock]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{BlockerRecord}",
+          "lines": [
+            27
+          ]
+        },
+        {
+          "dir": "in",
+          "peer": "[ValidationBlock]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{BlockerRecord}",
+          "lines": [
+            80
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{AcceptedEvidence}",
+          "fields": [
+            {
+              "name": "approvedPolicies"
+            },
+            {
+              "name": "candidateIdentity"
+            },
+            {
+              "name": "compatibilityLimits"
+            },
+            {
+              "name": "residualRisks"
+            },
+            {
+              "name": "testResults"
+            }
+          ]
+        },
+        {
+          "glyph": "{BlockerRecord}",
+          "fields": [
+            {
+              "name": "candidateIdentity"
+            },
+            {
+              "name": "missingEvidence"
+            },
+            {
+              "name": "reason"
+            },
+            {
+              "name": "requiredDecision"
+            },
+            {
+              "name": "stage"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        23,
+        27,
+        61,
+        80,
+        81
+      ],
+      "hashes": {
+        "interface": "07e01de528de340f",
+        "body": "2f62a16e87a9ab63"
+      }
+    },
+    {
+      "name": "EvidencePackage",
+      "kind": "service",
+      "glyph": "[EvidencePackage]",
+      "home": "EngineeringPlan",
+      "description": [
+        "Leaf responsibilities are bounded offline work packages, not network services. Each result includes a manifest and citations; unavailable inputs yield blockers."
+      ],
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "[PolicyPackage]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{EvidenceBundle} => {PolicyDecision}",
+          "lines": [
+            25
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{EvidenceBundle}",
+          "fields": [
+            {
+              "name": "compatibilityRisks"
+            },
+            {
+              "name": "deployedRevisions"
+            },
+            {
+              "name": "missingInputs"
+            },
+            {
+              "name": "routes"
+            },
+            {
+              "name": "sourceManifest"
+            },
+            {
+              "name": "timingMeasurements"
+            },
+            {
+              "name": "topology"
+            },
+            {
+              "name": "vendorCitations"
+            }
+          ]
+        },
+        {
+          "glyph": "{PolicyDecision}",
+          "fields": [
+            {
+              "name": "approvedScope"
+            },
+            {
+              "name": "evidenceReferences"
+            },
+            {
+              "name": "reviewers"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "unresolvedPolicies"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        19,
+        25,
+        36
+      ],
+      "hashes": {
+        "interface": "c67f627c56a3fcd5",
+        "body": "ca7f84f0b239e0d9"
+      }
+    },
+    {
+      "name": "ImplementationPackage",
+      "kind": "service",
+      "glyph": "[ImplementationPackage]",
+      "home": "EngineeringPlan",
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "[ApprovedWork]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{ApprovedScope} => {CandidateBundle}",
+          "lines": [
+            28
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{ApprovedScope}",
+          "fields": [
+            {
+              "name": "approval"
+            },
+            {
+              "name": "authorityRules"
+            },
+            {
+              "name": "commandTable"
+            },
+            {
+              "name": "compatibilityScope"
+            },
+            {
+              "name": "identity"
+            },
+            {
+              "name": "inputLivenessPolicy"
+            },
+            {
+              "name": "releasePolicy"
+            },
+            {
+              "name": "targetRevision"
+            },
+            {
+              "name": "testPlan"
+            }
+          ]
+        },
+        {
+          "glyph": "{CandidateBundle}",
+          "fields": [
+            {
+              "name": "configuration"
+            },
+            {
+              "name": "firmwareIdentity"
+            },
+            {
+              "name": "immutableIdentity"
+            },
+            {
+              "name": "resolvedHeaders"
+            },
+            {
+              "name": "revisions"
+            },
+            {
+              "name": "targetGroup"
+            },
+            {
+              "name": "tests"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        21,
+        28,
+        58
+      ],
+      "hashes": {
+        "interface": "f4a54de7cfb93b21",
+        "body": "560ad4f8f1f1d413"
+      }
+    },
+    {
+      "name": "PolicyBlock",
+      "kind": "service",
+      "glyph": "[PolicyBlock]",
+      "home": "EngineeringPlan",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "[DecisionRecord]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{BlockerRecord}",
+          "lines": [
+            27
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{BlockerRecord}",
+          "fields": [
+            {
+              "name": "candidateIdentity"
+            },
+            {
+              "name": "missingEvidence"
+            },
+            {
+              "name": "reason"
+            },
+            {
+              "name": "requiredDecision"
+            },
+            {
+              "name": "stage"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        27
+      ],
+      "hashes": {
+        "interface": "18bffc6ab3179d75",
+        "body": "1bcabc4cd308feb3"
+      }
+    },
+    {
+      "name": "PolicyPackage",
+      "kind": "service",
+      "glyph": "[PolicyPackage]",
+      "home": "EngineeringPlan",
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "[EvidencePackage]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{EvidenceBundle} => {PolicyDecision}",
+          "lines": [
+            25
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{EvidenceBundle}",
+          "fields": [
+            {
+              "name": "compatibilityRisks"
+            },
+            {
+              "name": "deployedRevisions"
+            },
+            {
+              "name": "missingInputs"
+            },
+            {
+              "name": "routes"
+            },
+            {
+              "name": "sourceManifest"
+            },
+            {
+              "name": "timingMeasurements"
+            },
+            {
+              "name": "topology"
+            },
+            {
+              "name": "vendorCitations"
+            }
+          ]
+        },
+        {
+          "glyph": "{PolicyDecision}",
+          "fields": [
+            {
+              "name": "approvedScope"
+            },
+            {
+              "name": "evidenceReferences"
+            },
+            {
+              "name": "reviewers"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "unresolvedPolicies"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        20,
+        25,
+        46
+      ],
+      "hashes": {
+        "interface": "5fe4b048a8ac20c7",
+        "body": "98fe2049f17d6faf"
+      }
+    },
+    {
+      "name": "ValidationPackage",
+      "kind": "service",
+      "glyph": "[ValidationPackage]",
+      "home": "EngineeringPlan",
+      "also_in": [
+        "ProduceCandidate"
+      ],
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "{CandidateBundle}",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{CandidateBundle} => {ValidationDecision}",
+          "lines": [
+            67
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{CandidateBundle}",
+          "fields": [
+            {
+              "name": "configuration"
+            },
+            {
+              "name": "firmwareIdentity"
+            },
+            {
+              "name": "immutableIdentity"
+            },
+            {
+              "name": "resolvedHeaders"
+            },
+            {
+              "name": "revisions"
+            },
+            {
+              "name": "targetGroup"
+            },
+            {
+              "name": "tests"
+            }
+          ]
+        },
+        {
+          "glyph": "{ValidationDecision}",
+          "fields": [
+            {
+              "name": "approvalIdentity"
+            },
+            {
+              "name": "blockers"
+            },
+            {
+              "name": "limitations"
+            },
+            {
+              "name": "results"
+            },
+            {
+              "name": "status"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        22,
+        67,
+        77
+      ],
+      "hashes": {
+        "interface": "1a8a1aa6c1bfe256",
+        "body": "e5e462ea1dbdc5f5"
+      }
+    },
+    {
+      "name": "ApprovedScope",
+      "kind": "data",
+      "glyph": "{ApprovedScope}",
+      "home": "EngineeringPlan",
+      "shapes": [
+        {
+          "glyph": "{ApprovedScope}",
+          "fields": [
+            {
+              "name": "approval"
+            },
+            {
+              "name": "authorityRules"
+            },
+            {
+              "name": "commandTable"
+            },
+            {
+              "name": "compatibilityScope"
+            },
+            {
+              "name": "identity"
+            },
+            {
+              "name": "inputLivenessPolicy"
+            },
+            {
+              "name": "releasePolicy"
+            },
+            {
+              "name": "targetRevision"
+            },
+            {
+              "name": "testPlan"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        16,
+        97
+      ],
+      "hashes": {
+        "interface": "29e1bebadc36779a",
+        "body": "216d08e207204e51"
+      }
+    },
+    {
+      "name": "CandidateBundle",
+      "kind": "data",
+      "glyph": "{CandidateBundle}",
+      "home": "EngineeringPlan",
+      "also_in": [
+        "ProduceCandidate"
+      ],
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "[ValidationPackage]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{CandidateBundle} => {ValidationDecision}",
+          "lines": [
+            67
+          ]
+        },
+        {
+          "dir": "in",
+          "peer": "[ImplementAndPackage]",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            66
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{CandidateBundle}",
+          "fields": [
+            {
+              "name": "configuration"
+            },
+            {
+              "name": "firmwareIdentity"
+            },
+            {
+              "name": "immutableIdentity"
+            },
+            {
+              "name": "resolvedHeaders"
+            },
+            {
+              "name": "revisions"
+            },
+            {
+              "name": "targetGroup"
+            },
+            {
+              "name": "tests"
+            }
+          ]
+        },
+        {
+          "glyph": "{ValidationDecision}",
+          "fields": [
+            {
+              "name": "approvalIdentity"
+            },
+            {
+              "name": "blockers"
+            },
+            {
+              "name": "limitations"
+            },
+            {
+              "name": "results"
+            },
+            {
+              "name": "status"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        17,
+        66,
+        67,
+        99
+      ],
+      "hashes": {
+        "interface": "0c67e023601d5d8a",
+        "body": "2ffa977bd97523cf"
+      }
+    },
+    {
+      "name": "EvidenceBundle",
+      "kind": "data",
+      "glyph": "{EvidenceBundle}",
+      "home": "EngineeringPlan",
+      "also_in": [
+        "EvidencePackage"
+      ],
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "[AssembleEvidence]",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            37
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{EvidenceBundle}",
+          "fields": [
+            {
+              "name": "compatibilityRisks"
+            },
+            {
+              "name": "deployedRevisions"
+            },
+            {
+              "name": "missingInputs"
+            },
+            {
+              "name": "routes"
+            },
+            {
+              "name": "sourceManifest"
+            },
+            {
+              "name": "timingMeasurements"
+            },
+            {
+              "name": "topology"
+            },
+            {
+              "name": "vendorCitations"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        14,
+        37,
+        95
+      ],
+      "hashes": {
+        "interface": "9f7e7d1bf3c92429",
+        "body": "7d924f75e8b0cb6e"
+      }
+    },
+    {
+      "name": "PolicyDecision",
+      "kind": "data",
+      "glyph": "{PolicyDecision}",
+      "home": "EngineeringPlan",
+      "also_in": [
+        "PolicyPackage"
+      ],
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "[EvaluateReadiness]",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            47
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{PolicyDecision}",
+          "fields": [
+            {
+              "name": "approvedScope"
+            },
+            {
+              "name": "evidenceReferences"
+            },
+            {
+              "name": "reviewers"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "unresolvedPolicies"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        15,
+        26,
+        47,
+        96
+      ],
+      "hashes": {
+        "interface": "c535ef8c48728a23",
+        "body": "e7665ba4ebb1bde3"
+      }
+    },
+    {
+      "name": "ValidationDecision",
+      "kind": "data",
+      "glyph": "{ValidationDecision}",
+      "home": "EngineeringPlan",
+      "also_in": [
+        "ValidationPackage"
+      ],
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "[EvaluateCandidate]",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            78
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{ValidationDecision}",
+          "fields": [
+            {
+              "name": "approvalIdentity"
+            },
+            {
+              "name": "blockers"
+            },
+            {
+              "name": "limitations"
+            },
+            {
+              "name": "results"
+            },
+            {
+              "name": "status"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        18,
+        78,
+        79,
+        100
+      ],
+      "hashes": {
+        "interface": "0ec4931cdd19f1e2",
+        "body": "522cd5a5cbbed154"
+      }
+    }
+  ],
+  "hashes": {
+    "interface": "1b9ca8b1fb41c701",
+    "body": "75c4c59354c9cba5"
+  }
+}

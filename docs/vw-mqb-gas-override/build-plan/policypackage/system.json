@@ -1,0 +1,133 @@
+{
+  "name": "PolicyPackage",
+  "kind": "expansion",
+  "face": "[PolicyPackage]",
+  "parent": "EngineeringPlan",
+  "depends_on": [
+    "EngineeringPlan"
+  ],
+  "interface": [
+    {
+      "from": "[EvidencePackage]",
+      "to": "[PolicyPackage]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{EvidenceBundle} => {PolicyDecision}",
+      "lines": [
+        25
+      ]
+    },
+    {
+      "from": "[EvaluateReadiness]",
+      "to": "{PolicyDecision}",
+      "arrow": "=>",
+      "mode": "return",
+      "lines": [
+        47
+      ]
+    }
+  ],
+  "shapes": [
+    {
+      "glyph": "{EvidenceBundle}",
+      "fields": [
+        {
+          "name": "compatibilityRisks"
+        },
+        {
+          "name": "deployedRevisions"
+        },
+        {
+          "name": "missingInputs"
+        },
+        {
+          "name": "routes"
+        },
+        {
+          "name": "sourceManifest"
+        },
+        {
+          "name": "timingMeasurements"
+        },
+        {
+          "name": "topology"
+        },
+        {
+          "name": "vendorCitations"
+        }
+      ]
+    },
+    {
+      "glyph": "{PolicyDecision}",
+      "fields": [
+        {
+          "name": "approvedScope"
+        },
+        {
+          "name": "evidenceReferences"
+        },
+        {
+          "name": "reviewers"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "unresolvedPolicies"
+        }
+      ]
+    }
+  ],
+  "components": [
+    {
+      "name": "EvaluateReadiness",
+      "kind": "service",
+      "glyph": "[EvaluateReadiness]",
+      "home": "PolicyPackage",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "{PolicyDecision}",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            47
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{PolicyDecision}",
+          "fields": [
+            {
+              "name": "approvedScope"
+            },
+            {
+              "name": "evidenceReferences"
+            },
+            {
+              "name": "reviewers"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "unresolvedPolicies"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        47
+      ],
+      "hashes": {
+        "interface": "f26692b084bf182d",
+        "body": "cdbfbd55e65c22bb"
+      }
+    }
+  ],
+  "hashes": {
+    "interface": "0a08df5efeeb1698",
+    "body": "76de035440ea60b2"
+  }
+}

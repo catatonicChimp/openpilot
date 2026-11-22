@@ -1,0 +1,240 @@
+{
+  "sigil_export": 1,
+  "sigil": "0.6.11",
+  "spec": "vw-mqb-gas-override-plan.sigil",
+  "spec_hash": "1a2827eb9b2ff3d7",
+  "top": "vw-mqb-gas-override-plan",
+  "systems": {
+    "vw-mqb-gas-override-plan": {
+      "path": "vw-mqb-gas-override-plan",
+      "interface": "4f53cda18c2baa0c",
+      "body": "7f6d4e8b6bcf42b6",
+      "components": [
+        "[EngineeringPlan]",
+        "[PlanRunner]",
+        "{AcceptedEvidence}",
+        "{BlockerRecord}"
+      ],
+      "depends_on": [
+        "EngineeringPlan"
+      ],
+      "parent": null,
+      "component_hashes": {
+        "[EngineeringPlan]": {
+          "interface": "4a7c93f1d0f61808",
+          "body": "86453b6e08231117"
+        },
+        "[PlanRunner]": {
+          "interface": "09794dd3760df28f",
+          "body": "95e7e2b2e759f21e"
+        },
+        "{AcceptedEvidence}": {
+          "interface": "8065d268be214f06",
+          "body": "172bfe656f301d9b"
+        },
+        "{BlockerRecord}": {
+          "interface": "8b07631e542228a6",
+          "body": "0c3df68978140811"
+        }
+      }
+    },
+    "EngineeringPlan": {
+      "path": "engineeringplan",
+      "interface": "1b9ca8b1fb41c701",
+      "body": "75c4c59354c9cba5",
+      "components": [
+        "[ApprovedWork]",
+        "[DecisionRecord]",
+        "[EvidencePackage]",
+        "[ImplementationPackage]",
+        "[PolicyBlock]",
+        "[PolicyPackage]",
+        "[ValidationPackage]",
+        "{ApprovedScope}",
+        "{CandidateBundle}",
+        "{EvidenceBundle}",
+        "{PolicyDecision}",
+        "{ValidationDecision}"
+      ],
+      "depends_on": [
+        "EvidencePackage",
+        "ImplementationPackage",
+        "PolicyPackage",
+        "ValidationPackage"
+      ],
+      "parent": "vw-mqb-gas-override-plan",
+      "component_hashes": {
+        "[ApprovedWork]": {
+          "interface": "9dc0b96c7c262c32",
+          "body": "d0ba5366d291b760"
+        },
+        "[DecisionRecord]": {
+          "interface": "07e01de528de340f",
+          "body": "2f62a16e87a9ab63"
+        },
+        "[EvidencePackage]": {
+          "interface": "c67f627c56a3fcd5",
+          "body": "ca7f84f0b239e0d9"
+        },
+        "[ImplementationPackage]": {
+          "interface": "f4a54de7cfb93b21",
+          "body": "560ad4f8f1f1d413"
+        },
+        "[PolicyBlock]": {
+          "interface": "18bffc6ab3179d75",
+          "body": "1bcabc4cd308feb3"
+        },
+        "[PolicyPackage]": {
+          "interface": "5fe4b048a8ac20c7",
+          "body": "98fe2049f17d6faf"
+        },
+        "[ValidationPackage]": {
+          "interface": "1a8a1aa6c1bfe256",
+          "body": "e5e462ea1dbdc5f5"
+        },
+        "{ApprovedScope}": {
+          "interface": "29e1bebadc36779a",
+          "body": "216d08e207204e51"
+        },
+        "{CandidateBundle}": {
+          "interface": "0c67e023601d5d8a",
+          "body": "2ffa977bd97523cf"
+        },
+        "{EvidenceBundle}": {
+          "interface": "9f7e7d1bf3c92429",
+          "body": "7d924f75e8b0cb6e"
+        },
+        "{PolicyDecision}": {
+          "interface": "c535ef8c48728a23",
+          "body": "e7665ba4ebb1bde3"
+        },
+        "{ValidationDecision}": {
+          "interface": "0ec4931cdd19f1e2",
+          "body": "522cd5a5cbbed154"
+        }
+      }
+    },
+    "EvidencePackage": {
+      "path": "evidencepackage",
+      "interface": "c6efffdd78ca4b0f",
+      "body": "55fd704f57efd89c",
+      "components": [
+        "[AssembleEvidence]"
+      ],
+      "depends_on": [
+        "EngineeringPlan",
+        "PolicyPackage"
+      ],
+      "parent": "EngineeringPlan",
+      "component_hashes": {
+        "[AssembleEvidence]": {
+          "interface": "5f73f31125c454f6",
+          "body": "b60224f05d15e450"
+        }
+      }
+    },
+    "ImplementationPackage": {
+      "path": "implementationpackage",
+      "interface": "918922e83ef8cb6b",
+      "body": "8c905b76bd93457f",
+      "components": [
+        "[BuildBlock]",
+        "[BuildDispatch]",
+        "[CheckBuildApproval]",
+        "[ProduceCandidate]",
+        "{BuildReadiness}"
+      ],
+      "depends_on": [
+        "EngineeringPlan",
+        "ProduceCandidate"
+      ],
+      "parent": "EngineeringPlan",
+      "component_hashes": {
+        "[BuildBlock]": {
+          "interface": "18bffc6ab3179d75",
+          "body": "a68ea3b09c82c9fa"
+        },
+        "[BuildDispatch]": {
+          "interface": "11b693556405c87c",
+          "body": "9637f9ee750b64f8"
+        },
+        "[CheckBuildApproval]": {
+          "interface": "95ae5d810690957d",
+          "body": "f62de31ba0acca58"
+        },
+        "[ProduceCandidate]": {
+          "interface": "63dd1729b8b2186a",
+          "body": "5b8e9db777cbba55"
+        },
+        "{BuildReadiness}": {
+          "interface": "7d19b1a189fcadc5",
+          "body": "9228156a22c59095"
+        }
+      }
+    },
+    "PolicyPackage": {
+      "path": "policypackage",
+      "interface": "0a08df5efeeb1698",
+      "body": "76de035440ea60b2",
+      "components": [
+        "[EvaluateReadiness]"
+      ],
+      "depends_on": [
+        "EngineeringPlan"
+      ],
+      "parent": "EngineeringPlan",
+      "component_hashes": {
+        "[EvaluateReadiness]": {
+          "interface": "f26692b084bf182d",
+          "body": "cdbfbd55e65c22bb"
+        }
+      }
+    },
+    "ProduceCandidate": {
+      "path": "producecandidate",
+      "interface": "82b9eb13e8729a19",
+      "body": "9e5e739e123a6a22",
+      "components": [
+        "[ImplementAndPackage]"
+      ],
+      "depends_on": [
+        "EngineeringPlan"
+      ],
+      "parent": "ImplementationPackage",
+      "component_hashes": {
+        "[ImplementAndPackage]": {
+          "interface": "2af1302f75981b28",
+          "body": "833df4eadf33b452"
+        }
+      }
+    },
+    "ValidationPackage": {
+      "path": "validationpackage",
+      "interface": "df0d1aeee32c1ab6",
+      "body": "60fab2c641b7eda0",
+      "components": [
+        "[AcceptanceDispatch]",
+        "[EvaluateCandidate]",
+        "[ValidationBlock]"
+      ],
+      "depends_on": [
+        "EngineeringPlan"
+      ],
+      "parent": "EngineeringPlan",
+      "component_hashes": {
+        "[AcceptanceDispatch]": {
+          "interface": "7e64e097d7e58ea4",
+          "body": "5756f5dba5272c9b"
+        },
+        "[EvaluateCandidate]": {
+          "interface": "0fdee1ce47da3d45",
+          "body": "f4eacddfcce41807"
+        },
+        "[ValidationBlock]": {
+          "interface": "18bffc6ab3179d75",
+          "body": "43dcd5c893f35d67"
+        }
+      }
+    }
+  }
+}

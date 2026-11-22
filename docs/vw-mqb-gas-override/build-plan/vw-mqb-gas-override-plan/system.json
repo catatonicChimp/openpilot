@@ -1,0 +1,251 @@
+{
+  "name": "vw-mqb-gas-override-plan",
+  "kind": "top",
+  "depends_on": [
+    "EngineeringPlan"
+  ],
+  "description": [
+    "MQB zero-request gas-override engineering work specification. This specifies deliverables and gates, not approved vehicle-control behavior. Runtime design: vw-mqb-gas-override.sigil (craft; unresolved policies remain blocked). Evidence contract: mqb-evidence/protocol-contract.md. Test inventory and owner inputs: mqb-evidence/completion-checklist.md. No deployment, firmware flashing, public-road reproduction or dataset publishing authorized."
+  ],
+  "flows": [
+    {
+      "from": "[PlanRunner]",
+      "to": "[EngineeringPlan]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{EvidenceBundle} => {ValidationDecision}",
+      "lines": [
+        12
+      ]
+    }
+  ],
+  "components": [
+    {
+      "name": "EngineeringPlan",
+      "kind": "service",
+      "glyph": "[EngineeringPlan]",
+      "home": "vw-mqb-gas-override-plan",
+      "interface": [
+        {
+          "dir": "in",
+          "peer": "[PlanRunner]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{EvidenceBundle} => {ValidationDecision}",
+          "lines": [
+            12
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{EvidenceBundle}",
+          "fields": [
+            {
+              "name": "compatibilityRisks"
+            },
+            {
+              "name": "deployedRevisions"
+            },
+            {
+              "name": "missingInputs"
+            },
+            {
+              "name": "routes"
+            },
+            {
+              "name": "sourceManifest"
+            },
+            {
+              "name": "timingMeasurements"
+            },
+            {
+              "name": "topology"
+            },
+            {
+              "name": "vendorCitations"
+            }
+          ]
+        },
+        {
+          "glyph": "{ValidationDecision}",
+          "fields": [
+            {
+              "name": "approvalIdentity"
+            },
+            {
+              "name": "blockers"
+            },
+            {
+              "name": "limitations"
+            },
+            {
+              "name": "results"
+            },
+            {
+              "name": "status"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        12,
+        13
+      ],
+      "hashes": {
+        "interface": "4a7c93f1d0f61808",
+        "body": "86453b6e08231117"
+      }
+    },
+    {
+      "name": "PlanRunner",
+      "kind": "service",
+      "glyph": "[PlanRunner]",
+      "home": "vw-mqb-gas-override-plan",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "[EngineeringPlan]",
+          "arrow": "->",
+          "mode": "sync",
+          "payload": "{EvidenceBundle} => {ValidationDecision}",
+          "lines": [
+            12
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{EvidenceBundle}",
+          "fields": [
+            {
+              "name": "compatibilityRisks"
+            },
+            {
+              "name": "deployedRevisions"
+            },
+            {
+              "name": "missingInputs"
+            },
+            {
+              "name": "routes"
+            },
+            {
+              "name": "sourceManifest"
+            },
+            {
+              "name": "timingMeasurements"
+            },
+            {
+              "name": "topology"
+            },
+            {
+              "name": "vendorCitations"
+            }
+          ]
+        },
+        {
+          "glyph": "{ValidationDecision}",
+          "fields": [
+            {
+              "name": "approvalIdentity"
+            },
+            {
+              "name": "blockers"
+            },
+            {
+              "name": "limitations"
+            },
+            {
+              "name": "results"
+            },
+            {
+              "name": "status"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        12
+      ],
+      "hashes": {
+        "interface": "09794dd3760df28f",
+        "body": "95e7e2b2e759f21e"
+      }
+    },
+    {
+      "name": "AcceptedEvidence",
+      "kind": "data",
+      "glyph": "{AcceptedEvidence}",
+      "home": "vw-mqb-gas-override-plan",
+      "shapes": [
+        {
+          "glyph": "{AcceptedEvidence}",
+          "fields": [
+            {
+              "name": "approvedPolicies"
+            },
+            {
+              "name": "candidateIdentity"
+            },
+            {
+              "name": "compatibilityLimits"
+            },
+            {
+              "name": "residualRisks"
+            },
+            {
+              "name": "testResults"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        102
+      ],
+      "hashes": {
+        "interface": "8065d268be214f06",
+        "body": "172bfe656f301d9b"
+      }
+    },
+    {
+      "name": "BlockerRecord",
+      "kind": "data",
+      "glyph": "{BlockerRecord}",
+      "home": "vw-mqb-gas-override-plan",
+      "shapes": [
+        {
+          "glyph": "{BlockerRecord}",
+          "fields": [
+            {
+              "name": "candidateIdentity"
+            },
+            {
+              "name": "missingEvidence"
+            },
+            {
+              "name": "reason"
+            },
+            {
+              "name": "requiredDecision"
+            },
+            {
+              "name": "stage"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        101
+      ],
+      "hashes": {
+        "interface": "8b07631e542228a6",
+        "body": "0c3df68978140811"
+      }
+    }
+  ],
+  "hashes": {
+    "interface": "4f53cda18c2baa0c",
+    "body": "7f6d4e8b6bcf42b6"
+  }
+}

@@ -1,0 +1,239 @@
+{
+  "name": "ImplementationOutcome.status=approved+VehicleApproval.status=approved+AcceptanceOutcome.status=accepted+ApprovalIdentity.status=match+VehicleIdentity.status=match+RuntimePolicyDecision.status=approved",
+  "label": "arm approved + arm approved + arm accepted + arm match + arm match + arm approved",
+  "outcome": "ok",
+  "frames": 167,
+  "states": [
+    "[MQBStateResolver] Inactive"
+  ],
+  "failed": [],
+  "routes": [],
+  "ignored": [],
+  "waiting": [],
+  "open": [],
+  "bounds": [],
+  "steps": [
+    {
+      "frame": 0,
+      "tick": 0,
+      "text": "episode 1 begins at (ReviewHost); (ReviewHost) calls [EvidenceReview] with {ReviewSession}"
+    },
+    {
+      "frame": 5,
+      "tick": 5,
+      "text": "(Reviewer) calls [DatasetInventory] with {DatasetSelection}"
+    },
+    {
+      "frame": 10,
+      "tick": 10,
+      "text": "[DatasetInventory] produces {DatasetManifest}"
+    },
+    {
+      "frame": 15,
+      "tick": 15,
+      "text": "{DatasetManifest} calls [ProtocolEvidenceReview]"
+    },
+    {
+      "frame": 20,
+      "tick": 20,
+      "text": "[ProtocolEvidenceReview] produces {ProtocolContractDraft}"
+    },
+    {
+      "frame": 25,
+      "tick": 25,
+      "text": "{ProtocolContractDraft} calls [StockTraceComparison]"
+    },
+    {
+      "frame": 30,
+      "tick": 30,
+      "text": "[StockTraceComparison] produces {ProtocolEvidence}"
+    },
+    {
+      "frame": 35,
+      "tick": 35,
+      "text": "{ProtocolEvidence} calls [MQBCompatibilityReview]"
+    },
+    {
+      "frame": 40,
+      "tick": 40,
+      "text": "[MQBCompatibilityReview] produces {CompatibilityRiskRegister}"
+    },
+    {
+      "frame": 45,
+      "tick": 45,
+      "text": "{CompatibilityRiskRegister} calls [RuntimePolicyReview]"
+    },
+    {
+      "frame": 49,
+      "tick": 49,
+      "text": "{CompatibilityRiskRegister} reaches the join into [RuntimePolicyReview]; {ProtocolEvidence} calls [RuntimePolicyReview]"
+    },
+    {
+      "frame": 53,
+      "tick": 53,
+      "text": "{ProtocolEvidence} reaches the join into [RuntimePolicyReview]; the join is complete: [RuntimePolicyReview] runs"
+    },
+    {
+      "frame": 54,
+      "tick": 54,
+      "text": "[RuntimePolicyReview] produces {RuntimePolicyDecision}"
+    },
+    {
+      "frame": 59,
+      "tick": 59,
+      "text": "branch {RuntimePolicyDecision}.status takes ‹approved›"
+    },
+    {
+      "frame": 64,
+      "tick": 64,
+      "text": "[PolicyApprovalDispatch] calls [ImplementationApprovalGate]"
+    },
+    {
+      "frame": 69,
+      "tick": 69,
+      "text": "[ImplementationReview] produces {ImplementationOutcome}"
+    },
+    {
+      "frame": 74,
+      "tick": 74,
+      "text": "branch {ImplementationOutcome}.status takes ‹approved›"
+    },
+    {
+      "frame": 79,
+      "tick": 79,
+      "text": "[EmitImplementationApproved] calls [Validation] with {ApprovedCandidateScope}"
+    },
+    {
+      "frame": 84,
+      "tick": 84,
+      "text": "[ValidationStart] calls [TransitionTestDesign]"
+    },
+    {
+      "frame": 89,
+      "tick": 89,
+      "text": "[TransitionTestDesign] produces {RegressionCases}"
+    },
+    {
+      "frame": 94,
+      "tick": 94,
+      "text": "{RegressionCases} calls [BuildIdentityGate]"
+    },
+    {
+      "frame": 99,
+      "tick": 99,
+      "text": "[BuildApprovalCheck] produces {BuildIdentity}"
+    },
+    {
+      "frame": 104,
+      "tick": 104,
+      "text": "branch {BuildIdentity}.status takes ‹stale›"
+    },
+    {
+      "frame": 109,
+      "tick": 109,
+      "text": "<MoreEvidenceRequired> calls [EvidenceBlockerRecord]"
+    },
+    {
+      "frame": 115,
+      "tick": 115,
+      "text": "episode 2 begins at (ControllerHost); (ControllerHost) calls [Runtime] with {RuntimeSession}"
+    },
+    {
+      "frame": 120,
+      "tick": 120,
+      "text": "[ControllerLifecycle] produces into <Initialize>"
+    },
+    {
+      "frame": 125,
+      "tick": 125,
+      "text": "<Initialize> calls [RuntimeInputs]; <Initialize> drives [MQBStateResolver]"
+    },
+    {
+      "frame": 129,
+      "tick": 129,
+      "text": "[MQBStateResolver] moves + → Inactive on <Initialize>"
+    },
+    {
+      "frame": 130,
+      "tick": 130,
+      "text": "[RuntimeInputs] produces {InputSnapshot}"
+    },
+    {
+      "frame": 135,
+      "tick": 135,
+      "text": "{InputSnapshot} calls [InputLivenessCheck]"
+    },
+    {
+      "frame": 140,
+      "tick": 140,
+      "text": "[InputLivenessCheck] produces {InputLiveness}"
+    },
+    {
+      "frame": 145,
+      "tick": 145,
+      "text": "branch {InputLiveness}.status takes ‹missing›"
+    },
+    {
+      "frame": 151,
+      "tick": 151,
+      "text": "episode 3 begins at (WatchdogHost); (WatchdogHost) calls [IndependentWatchdogs] with {ObservedLiveness}"
+    },
+    {
+      "frame": 156,
+      "tick": 156,
+      "text": "[WatchdogObservation] produces {WatchdogStatus}"
+    },
+    {
+      "frame": 161,
+      "tick": 161,
+      "text": "branch {WatchdogStatus}.kind takes ‹healthy›"
+    },
+    {
+      "frame": 166,
+      "tick": 166,
+      "text": "the run ends: ok"
+    }
+  ],
+  "log": [
+    "t000 conventions: written order; entries one after another; ?> not taken by default; the first member wins a race / alternative / branch",
+    "t000 episode 1: (ReviewHost)",
+    "t000 (ReviewHost) -> [EvidenceReview] : {ReviewSession}",
+    "t005 (Reviewer) -> [DatasetInventory] : {DatasetSelection}",
+    "t010 [DatasetInventory] => {DatasetManifest}",
+    "t015 {DatasetManifest} -> [ProtocolEvidenceReview]",
+    "t020 [ProtocolEvidenceReview] => {ProtocolContractDraft}",
+    "t025 {ProtocolContractDraft} -> [StockTraceComparison]",
+    "t030 [StockTraceComparison] => {ProtocolEvidence}",
+    "t035 {ProtocolEvidence} -> [MQBCompatibilityReview]",
+    "t040 [MQBCompatibilityReview] => {CompatibilityRiskRegister}",
+    "t045 {CompatibilityRiskRegister} -> [RuntimePolicyReview]",
+    "t049 deposit: {CompatibilityRiskRegister} at [RuntimePolicyReview]",
+    "t049 {ProtocolEvidence} -> [RuntimePolicyReview]",
+    "t054 [RuntimePolicyReview] => {RuntimePolicyDecision}",
+    "t059 branch {RuntimePolicyDecision}.status: approved",
+    "t064 [PolicyApprovalDispatch] -> [ImplementationApprovalGate]",
+    "t069 [ImplementationReview] => {ImplementationOutcome}",
+    "t074 branch {ImplementationOutcome}.status: approved",
+    "t079 [EmitImplementationApproved] -> [Validation] : {ApprovedCandidateScope}",
+    "t084 [ValidationStart] -> [TransitionTestDesign]",
+    "t089 [TransitionTestDesign] => {RegressionCases}",
+    "t094 {RegressionCases} -> [BuildIdentityGate]",
+    "t099 [BuildApprovalCheck] => {BuildIdentity}",
+    "t104 branch {BuildIdentity}.status: stale",
+    "t109 <MoreEvidenceRequired> -> [EvidenceBlockerRecord]",
+    "t115 episode 2: (ControllerHost)",
+    "t115 (ControllerHost) -> [Runtime] : {RuntimeSession}",
+    "t120 [ControllerLifecycle] => <Initialize>",
+    "t125 <Initialize> -> [RuntimeInputs]",
+    "t129 [MQBStateResolver] + -<Initialize>-> Inactive",
+    "t130 [RuntimeInputs] => {InputSnapshot}",
+    "t135 {InputSnapshot} -> [InputLivenessCheck]",
+    "t140 [InputLivenessCheck] => {InputLiveness}",
+    "t145 branch {InputLiveness}.status: missing",
+    "t151 episode 3: (WatchdogHost)",
+    "t151 (WatchdogHost) -> [IndependentWatchdogs] : {ObservedLiveness}",
+    "t156 [WatchdogObservation] => {WatchdogStatus}",
+    "t161 branch {WatchdogStatus}.kind: healthy",
+    "t166 done: ok"
+  ]
+}

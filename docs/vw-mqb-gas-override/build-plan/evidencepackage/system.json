@@ -1,0 +1,146 @@
+{
+  "name": "EvidencePackage",
+  "kind": "expansion",
+  "face": "[EvidencePackage]",
+  "parent": "EngineeringPlan",
+  "depends_on": [
+    "EngineeringPlan",
+    "PolicyPackage"
+  ],
+  "description": [
+    "Leaf responsibilities are bounded offline work packages, not network services. Each result includes a manifest and citations; unavailable inputs yield blockers."
+  ],
+  "interface": [
+    {
+      "from": "[EvidencePackage]",
+      "to": "[PolicyPackage]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{EvidenceBundle} => {PolicyDecision}",
+      "lines": [
+        25
+      ]
+    },
+    {
+      "from": "[AssembleEvidence]",
+      "to": "{EvidenceBundle}",
+      "arrow": "=>",
+      "mode": "return",
+      "lines": [
+        37
+      ]
+    }
+  ],
+  "shapes": [
+    {
+      "glyph": "{EvidenceBundle}",
+      "fields": [
+        {
+          "name": "compatibilityRisks"
+        },
+        {
+          "name": "deployedRevisions"
+        },
+        {
+          "name": "missingInputs"
+        },
+        {
+          "name": "routes"
+        },
+        {
+          "name": "sourceManifest"
+        },
+        {
+          "name": "timingMeasurements"
+        },
+        {
+          "name": "topology"
+        },
+        {
+          "name": "vendorCitations"
+        }
+      ]
+    },
+    {
+      "glyph": "{PolicyDecision}",
+      "fields": [
+        {
+          "name": "approvedScope"
+        },
+        {
+          "name": "evidenceReferences"
+        },
+        {
+          "name": "reviewers"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "unresolvedPolicies"
+        }
+      ]
+    }
+  ],
+  "components": [
+    {
+      "name": "AssembleEvidence",
+      "kind": "service",
+      "glyph": "[AssembleEvidence]",
+      "home": "EvidencePackage",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "{EvidenceBundle}",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            37
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{EvidenceBundle}",
+          "fields": [
+            {
+              "name": "compatibilityRisks"
+            },
+            {
+              "name": "deployedRevisions"
+            },
+            {
+              "name": "missingInputs"
+            },
+            {
+              "name": "routes"
+            },
+            {
+              "name": "sourceManifest"
+            },
+            {
+              "name": "timingMeasurements"
+            },
+            {
+              "name": "topology"
+            },
+            {
+              "name": "vendorCitations"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        37
+      ],
+      "hashes": {
+        "interface": "5f73f31125c454f6",
+        "body": "b60224f05d15e450"
+      }
+    }
+  ],
+  "hashes": {
+    "interface": "c6efffdd78ca4b0f",
+    "body": "55fd704f57efd89c"
+  }
+}

@@ -1,0 +1,353 @@
+{
+  "name": "ImplementationOutcome.status=approved+VehicleApproval.status=approved+AcceptanceOutcome.status=accepted+ApprovalIdentity.status=match+BuildIdentity.status=match+VehicleIdentity.status=match+RuntimePolicyDecision.status=approved+VehicleOutcome.status=unavailable",
+  "label": "arm approved + arm approved + arm accepted + arm match + arm match + arm match + arm approved + arm unavailable",
+  "outcome": "ok",
+  "frames": 262,
+  "states": [
+    "[MQBStateResolver] Inactive"
+  ],
+  "failed": [],
+  "routes": [],
+  "ignored": [],
+  "waiting": [],
+  "open": [],
+  "bounds": [],
+  "steps": [
+    {
+      "frame": 0,
+      "tick": 0,
+      "text": "episode 1 begins at (ReviewHost); (ReviewHost) calls [EvidenceReview] with {ReviewSession}"
+    },
+    {
+      "frame": 5,
+      "tick": 5,
+      "text": "(Reviewer) calls [DatasetInventory] with {DatasetSelection}"
+    },
+    {
+      "frame": 10,
+      "tick": 10,
+      "text": "[DatasetInventory] produces {DatasetManifest}"
+    },
+    {
+      "frame": 15,
+      "tick": 15,
+      "text": "{DatasetManifest} calls [ProtocolEvidenceReview]"
+    },
+    {
+      "frame": 20,
+      "tick": 20,
+      "text": "[ProtocolEvidenceReview] produces {ProtocolContractDraft}"
+    },
+    {
+      "frame": 25,
+      "tick": 25,
+      "text": "{ProtocolContractDraft} calls [StockTraceComparison]"
+    },
+    {
+      "frame": 30,
+      "tick": 30,
+      "text": "[StockTraceComparison] produces {ProtocolEvidence}"
+    },
+    {
+      "frame": 35,
+      "tick": 35,
+      "text": "{ProtocolEvidence} calls [MQBCompatibilityReview]"
+    },
+    {
+      "frame": 40,
+      "tick": 40,
+      "text": "[MQBCompatibilityReview] produces {CompatibilityRiskRegister}"
+    },
+    {
+      "frame": 45,
+      "tick": 45,
+      "text": "{CompatibilityRiskRegister} calls [RuntimePolicyReview]"
+    },
+    {
+      "frame": 49,
+      "tick": 49,
+      "text": "{CompatibilityRiskRegister} reaches the join into [RuntimePolicyReview]; {ProtocolEvidence} calls [RuntimePolicyReview]"
+    },
+    {
+      "frame": 53,
+      "tick": 53,
+      "text": "{ProtocolEvidence} reaches the join into [RuntimePolicyReview]; the join is complete: [RuntimePolicyReview] runs"
+    },
+    {
+      "frame": 54,
+      "tick": 54,
+      "text": "[RuntimePolicyReview] produces {RuntimePolicyDecision}"
+    },
+    {
+      "frame": 59,
+      "tick": 59,
+      "text": "branch {RuntimePolicyDecision}.status takes ‹approved›"
+    },
+    {
+      "frame": 64,
+      "tick": 64,
+      "text": "[PolicyApprovalDispatch] calls [ImplementationApprovalGate]"
+    },
+    {
+      "frame": 69,
+      "tick": 69,
+      "text": "[ImplementationReview] produces {ImplementationOutcome}"
+    },
+    {
+      "frame": 74,
+      "tick": 74,
+      "text": "branch {ImplementationOutcome}.status takes ‹approved›"
+    },
+    {
+      "frame": 79,
+      "tick": 79,
+      "text": "[EmitImplementationApproved] calls [Validation] with {ApprovedCandidateScope}"
+    },
+    {
+      "frame": 84,
+      "tick": 84,
+      "text": "[ValidationStart] calls [TransitionTestDesign]"
+    },
+    {
+      "frame": 89,
+      "tick": 89,
+      "text": "[TransitionTestDesign] produces {RegressionCases}"
+    },
+    {
+      "frame": 94,
+      "tick": 94,
+      "text": "{RegressionCases} calls [BuildIdentityGate]"
+    },
+    {
+      "frame": 99,
+      "tick": 99,
+      "text": "[BuildApprovalCheck] produces {BuildIdentity}"
+    },
+    {
+      "frame": 104,
+      "tick": 104,
+      "text": "branch {BuildIdentity}.status takes ‹match›"
+    },
+    {
+      "frame": 109,
+      "tick": 109,
+      "text": "[BuildDispatch] calls [CandidateBuild]"
+    },
+    {
+      "frame": 114,
+      "tick": 114,
+      "text": "[CandidateImplementation] produces {CandidateRevisionPair}"
+    },
+    {
+      "frame": 119,
+      "tick": 119,
+      "text": "{CandidateRevisionPair} calls [AutomatedGate]"
+    },
+    {
+      "frame": 124,
+      "tick": 124,
+      "text": "[ControllerAndSafetyTests] produces {AutomatedOutcome}"
+    },
+    {
+      "frame": 129,
+      "tick": 129,
+      "text": "branch {AutomatedOutcome}.status takes ‹pass›"
+    },
+    {
+      "frame": 134,
+      "tick": 134,
+      "text": "[EmitAutomatedTestsPassed] calls [BenchGate]"
+    },
+    {
+      "frame": 139,
+      "tick": 139,
+      "text": "[ReplayAndBenchValidation] produces {BenchOutcome}"
+    },
+    {
+      "frame": 144,
+      "tick": 144,
+      "text": "branch {BenchOutcome}.status takes ‹pass›"
+    },
+    {
+      "frame": 149,
+      "tick": 149,
+      "text": "[EmitBenchEvidenceReady] calls [VehicleApprovalGate]"
+    },
+    {
+      "frame": 154,
+      "tick": 154,
+      "text": "[VehicleTestReview] produces {VehicleApproval}"
+    },
+    {
+      "frame": 159,
+      "tick": 159,
+      "text": "branch {VehicleApproval}.status takes ‹approved›"
+    },
+    {
+      "frame": 164,
+      "tick": 164,
+      "text": "[EmitControlledTestingApproved] calls [VehicleIdentityGate]"
+    },
+    {
+      "frame": 169,
+      "tick": 169,
+      "text": "[VehicleCandidateCheck] produces {VehicleIdentity}"
+    },
+    {
+      "frame": 174,
+      "tick": 174,
+      "text": "branch {VehicleIdentity}.status takes ‹match›"
+    },
+    {
+      "frame": 179,
+      "tick": 179,
+      "text": "[VehicleTestDispatch] calls [VehicleRunGate]"
+    },
+    {
+      "frame": 184,
+      "tick": 184,
+      "text": "[ControlledVehicleValidation] produces {VehicleOutcome}"
+    },
+    {
+      "frame": 189,
+      "tick": 189,
+      "text": "branch {VehicleOutcome}.status takes ‹unavailable›"
+    },
+    {
+      "frame": 194,
+      "tick": 194,
+      "text": "[VehicleRunGateEmitValidationUnavailable] calls [ValidationRecorder]"
+    },
+    {
+      "frame": 199,
+      "tick": 199,
+      "text": "[ValidationRecorder] produces {ValidationRecord}"
+    },
+    {
+      "frame": 204,
+      "tick": 204,
+      "text": "<MoreEvidenceRequired> calls [EvidenceBlockerRecord]"
+    },
+    {
+      "frame": 210,
+      "tick": 210,
+      "text": "episode 2 begins at (ControllerHost); (ControllerHost) calls [Runtime] with {RuntimeSession}"
+    },
+    {
+      "frame": 215,
+      "tick": 215,
+      "text": "[ControllerLifecycle] produces into <Initialize>"
+    },
+    {
+      "frame": 220,
+      "tick": 220,
+      "text": "<Initialize> calls [RuntimeInputs]; <Initialize> drives [MQBStateResolver]"
+    },
+    {
+      "frame": 224,
+      "tick": 224,
+      "text": "[MQBStateResolver] moves + → Inactive on <Initialize>"
+    },
+    {
+      "frame": 225,
+      "tick": 225,
+      "text": "[RuntimeInputs] produces {InputSnapshot}"
+    },
+    {
+      "frame": 230,
+      "tick": 230,
+      "text": "{InputSnapshot} calls [InputLivenessCheck]"
+    },
+    {
+      "frame": 235,
+      "tick": 235,
+      "text": "[InputLivenessCheck] produces {InputLiveness}"
+    },
+    {
+      "frame": 240,
+      "tick": 240,
+      "text": "branch {InputLiveness}.status takes ‹missing›"
+    },
+    {
+      "frame": 246,
+      "tick": 246,
+      "text": "episode 3 begins at (WatchdogHost); (WatchdogHost) calls [IndependentWatchdogs] with {ObservedLiveness}"
+    },
+    {
+      "frame": 251,
+      "tick": 251,
+      "text": "[WatchdogObservation] produces {WatchdogStatus}"
+    },
+    {
+      "frame": 256,
+      "tick": 256,
+      "text": "branch {WatchdogStatus}.kind takes ‹healthy›"
+    },
+    {
+      "frame": 261,
+      "tick": 261,
+      "text": "the run ends: ok"
+    }
+  ],
+  "log": [
+    "t000 conventions: written order; entries one after another; ?> not taken by default; the first member wins a race / alternative / branch",
+    "t000 episode 1: (ReviewHost)",
+    "t000 (ReviewHost) -> [EvidenceReview] : {ReviewSession}",
+    "t005 (Reviewer) -> [DatasetInventory] : {DatasetSelection}",
+    "t010 [DatasetInventory] => {DatasetManifest}",
+    "t015 {DatasetManifest} -> [ProtocolEvidenceReview]",
+    "t020 [ProtocolEvidenceReview] => {ProtocolContractDraft}",
+    "t025 {ProtocolContractDraft} -> [StockTraceComparison]",
+    "t030 [StockTraceComparison] => {ProtocolEvidence}",
+    "t035 {ProtocolEvidence} -> [MQBCompatibilityReview]",
+    "t040 [MQBCompatibilityReview] => {CompatibilityRiskRegister}",
+    "t045 {CompatibilityRiskRegister} -> [RuntimePolicyReview]",
+    "t049 deposit: {CompatibilityRiskRegister} at [RuntimePolicyReview]",
+    "t049 {ProtocolEvidence} -> [RuntimePolicyReview]",
+    "t054 [RuntimePolicyReview] => {RuntimePolicyDecision}",
+    "t059 branch {RuntimePolicyDecision}.status: approved",
+    "t064 [PolicyApprovalDispatch] -> [ImplementationApprovalGate]",
+    "t069 [ImplementationReview] => {ImplementationOutcome}",
+    "t074 branch {ImplementationOutcome}.status: approved",
+    "t079 [EmitImplementationApproved] -> [Validation] : {ApprovedCandidateScope}",
+    "t084 [ValidationStart] -> [TransitionTestDesign]",
+    "t089 [TransitionTestDesign] => {RegressionCases}",
+    "t094 {RegressionCases} -> [BuildIdentityGate]",
+    "t099 [BuildApprovalCheck] => {BuildIdentity}",
+    "t104 branch {BuildIdentity}.status: match",
+    "t109 [BuildDispatch] -> [CandidateBuild]",
+    "t114 [CandidateImplementation] => {CandidateRevisionPair}",
+    "t119 {CandidateRevisionPair} -> [AutomatedGate]",
+    "t124 [ControllerAndSafetyTests] => {AutomatedOutcome}",
+    "t129 branch {AutomatedOutcome}.status: pass",
+    "t134 [EmitAutomatedTestsPassed] -> [BenchGate]",
+    "t139 [ReplayAndBenchValidation] => {BenchOutcome}",
+    "t144 branch {BenchOutcome}.status: pass",
+    "t149 [EmitBenchEvidenceReady] -> [VehicleApprovalGate]",
+    "t154 [VehicleTestReview] => {VehicleApproval}",
+    "t159 branch {VehicleApproval}.status: approved",
+    "t164 [EmitControlledTestingApproved] -> [VehicleIdentityGate]",
+    "t169 [VehicleCandidateCheck] => {VehicleIdentity}",
+    "t174 branch {VehicleIdentity}.status: match",
+    "t179 [VehicleTestDispatch] -> [VehicleRunGate]",
+    "t184 [ControlledVehicleValidation] => {VehicleOutcome}",
+    "t189 branch {VehicleOutcome}.status: unavailable",
+    "t194 [VehicleRunGateEmitValidationUnavailable] -> [ValidationRecorder]",
+    "t199 [ValidationRecorder] => {ValidationRecord}",
+    "t204 <MoreEvidenceRequired> -> [EvidenceBlockerRecord]",
+    "t210 episode 2: (ControllerHost)",
+    "t210 (ControllerHost) -> [Runtime] : {RuntimeSession}",
+    "t215 [ControllerLifecycle] => <Initialize>",
+    "t220 <Initialize> -> [RuntimeInputs]",
+    "t224 [MQBStateResolver] + -<Initialize>-> Inactive",
+    "t225 [RuntimeInputs] => {InputSnapshot}",
+    "t230 {InputSnapshot} -> [InputLivenessCheck]",
+    "t235 [InputLivenessCheck] => {InputLiveness}",
+    "t240 branch {InputLiveness}.status: missing",
+    "t246 episode 3: (WatchdogHost)",
+    "t246 (WatchdogHost) -> [IndependentWatchdogs] : {ObservedLiveness}",
+    "t251 [WatchdogObservation] => {WatchdogStatus}",
+    "t256 branch {WatchdogStatus}.kind: healthy",
+    "t261 done: ok"
+  ]
+}

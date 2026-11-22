@@ -1,0 +1,148 @@
+{
+  "name": "ProduceCandidate",
+  "kind": "expansion",
+  "face": "[ProduceCandidate]",
+  "parent": "ImplementationPackage",
+  "depends_on": [
+    "EngineeringPlan"
+  ],
+  "interface": [
+    {
+      "from": "[BuildDispatch]",
+      "to": "[ProduceCandidate]",
+      "arrow": "->",
+      "mode": "sync",
+      "payload": "{ApprovedScope} => {CandidateBundle}",
+      "lines": [
+        62
+      ]
+    },
+    {
+      "from": "[ImplementAndPackage]",
+      "to": "{CandidateBundle}",
+      "arrow": "=>",
+      "mode": "return",
+      "lines": [
+        66
+      ]
+    }
+  ],
+  "shapes": [
+    {
+      "glyph": "{ApprovedScope}",
+      "fields": [
+        {
+          "name": "approval"
+        },
+        {
+          "name": "authorityRules"
+        },
+        {
+          "name": "commandTable"
+        },
+        {
+          "name": "compatibilityScope"
+        },
+        {
+          "name": "identity"
+        },
+        {
+          "name": "inputLivenessPolicy"
+        },
+        {
+          "name": "releasePolicy"
+        },
+        {
+          "name": "targetRevision"
+        },
+        {
+          "name": "testPlan"
+        }
+      ]
+    },
+    {
+      "glyph": "{CandidateBundle}",
+      "fields": [
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "firmwareIdentity"
+        },
+        {
+          "name": "immutableIdentity"
+        },
+        {
+          "name": "resolvedHeaders"
+        },
+        {
+          "name": "revisions"
+        },
+        {
+          "name": "targetGroup"
+        },
+        {
+          "name": "tests"
+        }
+      ]
+    }
+  ],
+  "components": [
+    {
+      "name": "ImplementAndPackage",
+      "kind": "service",
+      "glyph": "[ImplementAndPackage]",
+      "home": "ProduceCandidate",
+      "interface": [
+        {
+          "dir": "out",
+          "peer": "{CandidateBundle}",
+          "arrow": "=>",
+          "mode": "return",
+          "lines": [
+            66
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "glyph": "{CandidateBundle}",
+          "fields": [
+            {
+              "name": "configuration"
+            },
+            {
+              "name": "firmwareIdentity"
+            },
+            {
+              "name": "immutableIdentity"
+            },
+            {
+              "name": "resolvedHeaders"
+            },
+            {
+              "name": "revisions"
+            },
+            {
+              "name": "targetGroup"
+            },
+            {
+              "name": "tests"
+            }
+          ]
+        }
+      ],
+      "lines": [
+        66
+      ],
+      "hashes": {
+        "interface": "2af1302f75981b28",
+        "body": "833df4eadf33b452"
+      }
+    }
+  ],
+  "hashes": {
+    "interface": "82b9eb13e8729a19",
+    "body": "9e5e739e123a6a22"
+  }
+}

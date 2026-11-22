@@ -1,0 +1,10 @@
+test_every_identity_field_mutation_invalidates_both_actions (test_runtime_contract.RuntimeContractTests.test_every_identity_field_mutation_invalidates_both_actions) ... ok
+test_new_action_specific_approval_uses_exact_snapshot (test_runtime_contract.RuntimeContractTests.test_new_action_specific_approval_uses_exact_snapshot) ... ok
+test_output_prerequisites_exhaustive (test_runtime_contract.RuntimeContractTests.test_output_prerequisites_exhaustive) ... ok
+test_retained_state_after_independent_watchdog_revocation (test_runtime_contract.RuntimeContractTests.test_retained_state_after_independent_watchdog_revocation) ... ok
+test_revoke_authority_after_previous_success (test_runtime_contract.RuntimeContractTests.test_revoke_authority_after_previous_success) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+OK
